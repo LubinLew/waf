@@ -27,9 +27,6 @@
 /* decode failed */
 #define _NG (uint8_t)(0xFF)
 
-/* decode Percent-Encoding data */
-#define _HEX2VAL(_val1, _val2) ((uint8_t)((uint8_t)((_val1 << 4) + (_val2))))
-#define _DEC2VAL(_val1, _val2) ((uint8_t)((uint8_t)((_val1 * 10) + (_val2))))
 
 /* fast short-string compare */
 #define _2cmp(_d1, _d2) *((uint16_t*)(_d1)) == *((uint16_t*)(_d2))
@@ -52,6 +49,10 @@
 #define _num(_ch) g_dec_charset[_ch]
 
 
+/* decode Percent-Encoding data */
+#define _HEX2VAL(_val1, _val2) ((uint8_t)((uint8_t)((_val1 << 4) + (_val2))))
+#define _DEC2VAL(_val1, _val2) ((uint8_t)((uint8_t)((_val1 * 10) + (_val2))))
+#define _HEXCHR2VAL(_val1, _val2) _HEX2VAL(_hex(_val1), _hex(_val2))
 
 /*------------------------------------ DEBUG ---------------------------------------*/
 #ifdef __DEBUG

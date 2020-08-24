@@ -23,11 +23,21 @@ ts_delete_space(uint8_t *data, size_t *len);
 uint8_t* 
 ts_compress_space(uint8_t *data, size_t *len);
 
+
+
 uint8_t* 
 tf_url_decode(uint8_t *data, size_t *len);
 
 uint8_t* 
 tf_html_entity_decode(uint8_t* data, size_t* len);
+
+uint8_t* 
+tf_js_decode(uint8_t* data, size_t* len);
+
+uint8_t* 
+tf_css_decode(uint8_t* data, size_t* len);
+
+
 
 uint8_t* 
 tf_base64_decode(uint8_t *data, size_t *len);

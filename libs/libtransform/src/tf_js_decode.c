@@ -19,6 +19,56 @@
  * 
 */
 
+static inline void 
+_tf_js_2byte_decode(uint8_t** psrc, uint8_t** pdst)
+{
+	uint8_t* src = *psrc;
+	uint8_t* dst = *pdst;
+	uint8_t  val;
+	
+	if (_NG !=_chr(src[1]) && _NG != _chr(src[2])) {
+		val = _chr(_HEXCHR2VAL(src[1], src[2]));
+		if (val != _NG) {
+			*dst++ = val;
+			*psrc = src + 4;
+			*pdst = dst;
+			return;
+		} 
+	}
+
+	/* step by one */
+	*dst++ = '%';
+	*psrc = src + 1;
+	*pdst = dst;
+	return;
+}
+
+static inline void 
+_tf_js_4byte_decode(uint8_t** psrc, uint8_t** pdst)
+{
+	uint8_t* src = *psrc;
+	uint8_t* dst = *pdst;
+	uint8_t  val;
+	
+	if ('0' == src[2] && '0' == src[3] && \
+		_NG !=_hex(src[4]) && _NG != _hex(src[5])) {
+		val = _chr(_HEXCHR2VAL(src[4], src[5]));
+		if (val != _NG) {
+			*dst++ = val;
+			*psrc = src + 6;
+			*pdst = dst;
+			return;
+		}
+	}
+
+	/* step by 2 (%u) */
+	*dst++ = src[0]; /* % or \ */
+	*dst++ = 'u';
+	*psrc = src + 2;
+	*pdst = dst;
+	return;
+}
+
 uint8_t* 
 tf_js_decode(uint8_t* data, size_t* len)
 {
@@ -33,21 +83,41 @@ tf_js_decode(uint8_t* data, size_t* len)
 	while (ch < end) {
 		if ('%' == ch[0]) {
 			if ('u' == _chr(ch[1])) {/* %uxxxx */
-
+				_tf_js_4byte_decode(&ch, &data);
 			} else { /* %xx */
-
+				_tf_js_2byte_decode(&ch, &data);
 			}
-
 		} else if ('\\' == ch[0]) {
 			if ('u' == _chr(ch[1])) {/* \uxxxx */
-
+				_tf_js_4byte_decode(&ch, &data);
 			}
-
 		} else {
+			*data++ = *ch++;
 		}
-		
 	}
 
+	/* keep last 5 bytes, if last 6 characters are not %uxxxx format */
+	end += 5;
+	_DBG("ch postion [%p], end [%p]", ch, end);
+	if (likely(ch < end)) {
+		*(data++) = ch[0];
+		*(data++) = ch[1];
+	}
+
+	*len = data - pret;
+	return pret;
 }
+
+
+#ifdef __TF_JS_TEST
+int main(int argv, const char* argv[])
+{
+
+
+	return 0;
+
+}
+
+#endif /* __TF_JS_TEST */
 
 
