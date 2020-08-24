@@ -13,11 +13,6 @@
 #include "tf_common.h"
 
 
-
-extern uint8_t g_hex_charset[];
-extern uint8_t g_url_charset[];
-
-
 /* decode Percent-Encoding data inplace */
 uint8_t* tf_url_decode(uint8_t* data, size_t* len)
 {
@@ -36,8 +31,8 @@ uint8_t* tf_url_decode(uint8_t* data, size_t* len)
 			ch2 = g_hex_charset[ch[2]];
 
 			/* invalid %AB format */
-			if (unlikely((ch1&ch2) == _NG)) {
-				_DBG("Invalid Format [%c%c%c]", ch[0], ch[1], ch[2]);
+			if (unlikely((ch1|ch2) == _NG)) {
+				_DBG("Invalid Format [%c%c%c], val[%d,%d]", ch[0], ch[1], ch[2], ch1, ch2);
 				*(data++) = g_url_charset[ch[0]];
 				++ch;
 				continue;
@@ -48,7 +43,7 @@ uint8_t* tf_url_decode(uint8_t* data, size_t* len)
 				_DBG("Valid Format [%c%c%c] > [%c]", ch[0], ch[1], ch[2], ret);
 				*(data++) = ret;	
 			} else { /* convert failed, so keep it */
-				_DBG("Invalid Format [%c%c%c]", ch[0], ch[1], ch[2]);
+				_DBG("Invalid Format [%c%c%c], val[%d,%d]", ch[0], ch[1], ch[2], ch1, ch2);
 				*(data++) = '%'; /* = *ch */
 				*(data++) = g_url_charset[ch[1]];
 				*(data++) = g_url_charset[ch[2]];
@@ -91,7 +86,8 @@ int main(int argc, const char* argv[])
 		(uint8_t*)"inVALID+format:%FF%ZX:end",
 		(uint8_t*)"\"java\r\nscript\"",
 		(uint8_t*)"filename: /%E4%B8%AD%E6%96%87%E8%B7%AF%E5%BE%84",
-		(uint8_t*)"test%A0test"
+		(uint8_t*)"test%A0test",
+		(uint8_t*)"%%35%%%%%%%%%%%"
 	};
 
 	for (i = 0; i < sizeof(urls)/sizeof(char*); i++) {

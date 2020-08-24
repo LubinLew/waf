@@ -2,14 +2,12 @@
  * Base64 Decode
  * Copyright (c) LubinLew
  *
- * https://github.com/LubinLew/nginx-study/blob/master/src/core/ngx_string.c#L1158
+ * [RFC4648]https://www.rfc-editor.org/rfc/rfc4648.html [The Base16, Base32, and Base64 Data Encodings]
  *
 */
 
 #include "tf_common.h"
 
-extern uint8_t g_base64_charset[];
-extern uint8_t g_base64url_charset[];
 
 
 static uint8_t *
@@ -70,12 +68,18 @@ _tf_decode_base64_internal(uint8_t *data, size_t *plen, const uint8_t *charset)
     return pret;
 }
 
+/**
+ * https://tools.ietf.org/html/rfc4648#section-4
+ */
 uint8_t* 
 tf_base64_decode(uint8_t *data, size_t *len)
 {
     return _tf_decode_base64_internal(data, len, g_base64_charset);
 }
 
+/**
+* https://tools.ietf.org/html/rfc4648#section-5
+*/
 uint8_t* 
 tf_base64url_decode(uint8_t *data, size_t *len)
 {

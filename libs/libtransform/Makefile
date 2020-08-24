@@ -26,9 +26,14 @@ base64_test:tf_base64_decode.c tf_common.o
 	${CC} ${CFLAGS} -c -D__DEBUG -D__TF_BASE64_TEST $<
 	${CC} tf_base64_decode.o tf_common.o -o $@
 
-test:url_test space_test entity_test base64_test
+js_test:tf_js_decode.c tf_common.o
+	${CC} ${CFLAGS} -c -D__DEBUG -D__TF_JS_TEST $<
+	${CC} tf_js_decode.o tf_common.o -o $@
+
+
+test:url_test space_test entity_test base64_test js_test
 
 
 clean:
-	rm -f *.o url_test space_test entity_test base64_test
+	rm -f *.o url_test space_test entity_test base64_test js_test
 	

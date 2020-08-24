@@ -3,7 +3,7 @@
  * Copyright (c) LubinLew
  *
 */
-
+#define __EXCLUDE_EXTERN_TBL
 #include "tf_common.h"
 /*------------------------------------------- DEC CHARSET -------------------------------------------*/
 
@@ -115,6 +115,8 @@ const uint8_t g_url_charset[] = {
 /* 0xF0~0xFF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG
 };
 
+/*------------------------------------------ BASE64-CHARSET ------------------------------------------*/
+/* https://tools.ietf.org/html/rfc4648#section-4 */
 const uint8_t g_base64_charset[] = {
  /* 0x00~0x0F */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
  /* 0x10~0x1F */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
@@ -133,7 +135,8 @@ const uint8_t g_base64_charset[] = {
  /* 0xE0~0xEF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
  /* 0xF0~0xFF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG
  };
-
+ /*----------------------------------------- BASE64URL-CHARSET -----------------------------------------*/
+/* https://tools.ietf.org/html/rfc4648#section-5 */
 const uint8_t g_base64url_charset[] = {
 /* 0x00~0x0F */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
 /* 0x10~0x1F */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,

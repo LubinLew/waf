@@ -14,20 +14,7 @@
 #include <string.h>
 #include "tf_common.h"
 
-extern uint8_t g_hex_charset[];
-extern uint8_t g_dec_charset[];
-extern uint8_t g_url_charset[];
 
-#define _chr(_ch) g_url_charset[_ch]
-#define _hex(_ch) g_hex_charset[_ch]
-#define _num(_ch) g_dec_charset[_ch]
-
-/* fast string compare */
-#define _2cmp(_d1, _d2) *((uint16_t*)(_d1)) == *((uint16_t*)(_d2))
-#define _4cmp(_d1, _d2) *((uint32_t*)(_d1)) == *((uint32_t*)(_d2))
-
-/* internal string copy */
-#define _copy(_start, _end, _dst) while (_start < _end) {*(_dst++) = *(_start++);}
 
 /* Complete list of HTML entities. 
  - ASCII Characters, we just support this one only
