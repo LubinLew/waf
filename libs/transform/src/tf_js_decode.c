@@ -15,7 +15,7 @@
  *> a four-digit escape sequence of the form %uxxxx is used.
  *
  * We Just Decode ASCII
- * javascript will encode ascii to %XX or %u00XX or \u00XX
+ * javascript will encode ascii to %XX or %u00XX or \u00XX \xXX
  * 
 */
 

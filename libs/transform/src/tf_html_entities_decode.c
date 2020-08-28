@@ -29,9 +29,11 @@
 <	&lt;	&#60;	&#x3C;	less than
 >	&gt;	&#62;	&#x3E;	greater than
  	&nbsp;	&#160;	&#xA0;	no-break space = non-breaking space
+" 	&quot; 	&#34;
+'   &apos;  &#39;
 
-Support entities:
-	https://www.freeformatter.com/html-entities.html#ascii-characters
+support entities:
+  https://www.freeformatter.com/html-entities.html#ascii-characters
 */
 
 
@@ -111,15 +113,17 @@ _tf_html_entiry_convert(uint8_t* start, uint8_t* end)
 		}
 		break;
 
-	case 'a' : /* &amp */
+	case 'a' : /* &amp; */
 		if ((3 == len) && (_4cmp("amp;", start))) {
 			return '&';
+		} else if ((4 == len) && (_4cmp("apos", start))) { /* &apos;  */
+			return '\'';
 		} else {
 			return _NG;
 		}
 		 break;
 
-	case 'l' : /* &lt */
+	case 'l' : /* &lt; */
 		if ((2 == len) && (_2cmp("lt", start))) {
 			return '<';
 		} else {
@@ -127,7 +131,7 @@ _tf_html_entiry_convert(uint8_t* start, uint8_t* end)
 		}
 		break;
 
-	case 'g' : /* &gt */
+	case 'g' : /* &gt; */
 		if ((2 == len) && (_2cmp("gt", start))) {
 			return '>';
 		} else {
@@ -135,9 +139,17 @@ _tf_html_entiry_convert(uint8_t* start, uint8_t* end)
 		}
 		break;
 
-	case 'n' : /* &nbsp */
+	case 'n' : /* &nbsp; */
 		if ((4 == len) && (_4cmp("nbsp", start))) {
 			return _SP;
+		} else {
+			return _NG;
+		}
+		break;
+
+	case 'q': /* &quot; */
+		if ((4 == len) && (_4cmp("quot", start))) {
+			return '"';
 		} else {
 			return _NG;
 		}
