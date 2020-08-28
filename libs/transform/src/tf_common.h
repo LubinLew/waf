@@ -40,6 +40,7 @@
 	extern uint8_t g_hex_charset[];
 	extern uint8_t g_dec_charset[];
 	extern uint8_t g_url_charset[];
+	extern uint8_t g_ascii_charset[];
 	extern uint8_t g_base64_charset[];
 	extern uint8_t g_base64url_charset[];
 #endif /* __EXCLUDE_EXTERN_TBL */

@@ -115,6 +115,35 @@ const uint8_t g_url_charset[] = {
 /* 0xF0~0xFF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG
 };
 
+/*----------------------------------------- PINTABLE-ACSII-CHARSET ------------------------------------------*/
+
+/* the only one difference with g_url_charset is Plus character
+ * Control characters: [0x00 ~ 0x1F, 0x7F] convert to SP(0x20)
+ * Numbers: [0x30 ~ 0x39] Do Nothing
+ * Lowercase letters: [0x61 ~ 0x7A] Do Nothing
+ * Uppercase letters: [0x41 ~ 0x5A] convert to lowercase
+ * non-breaking space: [0xA0] convert to SP(0x20)
+*/
+const uint8_t g_ascii_charset[] = {
+/* 0x00~0x0F */_SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP,
+/* 0x10~0x1F */_SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP, _SP,
+/* 0x20~0x2F */_SP, '!', '"', '#', '$', '%', '&','\'', '(', ')', '*', '+', ',', '-', '.', '/',
+/* 0x30~0x3F */'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
+/* 0x40~0x4F */'@', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+/* 0x50~0x5F */'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '_',
+/* 0x60~0x6F */'`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+/* 0x70~0x7F */'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', _SP,
+/* 0x80~0x8F */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
+/* 0x90~0x9F */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
+/* 0xA0~0xAF */_SP, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
+/* 0xB0~0xBF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
+/* 0xC0~0xCF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
+/* 0xD0~0xDF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
+/* 0xE0~0xEF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
+/* 0xF0~0xFF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG
+};
+
+
 /*------------------------------------------ BASE64-CHARSET ------------------------------------------*/
 /* https://tools.ietf.org/html/rfc4648#section-4 */
 const uint8_t g_base64_charset[] = {
@@ -155,3 +184,6 @@ const uint8_t g_base64url_charset[] = {
 /* 0xE0~0xEF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG,
 /* 0xF0~0xFF */_NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG, _NG
 };
+
+
+

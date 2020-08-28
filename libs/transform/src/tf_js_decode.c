@@ -14,9 +14,12 @@
  *> For those characters being replaced whose code unit value is greater than 0x00FF, 
  *> a four-digit escape sequence of the form %uxxxx is used.
  *
- * We Just Decode ASCII
- * javascript will encode ascii to %XX or %u00XX or \u00XX \xXX
- * 
+ * !!! We Just Decode ASCII
+ * javascript could encode ascii to 4 format:
+ *	1) %HH
+ *  2) \xHH
+ *  3) %u00HH
+ *  4) \u00HH
 */
 
 static inline void 
@@ -78,7 +81,7 @@ tf_js_decode(uint8_t* data, size_t* len)
 {
 	uint8_t* ch   = data;
 	uint8_t* pret = data;
-	uint8_t* end  = data + *len - 5; /* for %uxxxx format */
+	uint8_t* end  = data + *len - 5; /* for %uHHHH format */
 
 	_DBG("ch postion [%p], end [%p]", ch, end);
 
@@ -86,7 +89,7 @@ tf_js_decode(uint8_t* data, size_t* len)
 		if ('%' == ch[0]) {
 			if ('u' == _chr(ch[1])) {/* %uxxxx */
 				_tf_js_4byte_decode(&ch, &data);
-			} else { /* %xx */
+			} else { /* %xHH */
 				_tf_js_2byte_decode(&ch, &data);
 			}
 		} else if ('\\' == ch[0]) {

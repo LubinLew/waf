@@ -16,33 +16,24 @@
 
 
 
-/* Complete list of HTML entities. 
- - ASCII Characters, we just support this one only
- - ISO 8859-1 Characters
- - ISO 8859-1 Symbols
- - Math Symbols
- - Greek Letters
- - Miscellaneous HTML entities
-
+/* 
  * A html Entity has 3 formats.
-&	&amp;	&#38;	&#x26;	ampersand
-<	&lt;	&#60;	&#x3C;	less than
->	&gt;	&#62;	&#x3E;	greater than
- 	&nbsp;	&#160;	&#xA0;	no-break space = non-breaking space
-" 	&quot; 	&#34;
-'   &apos;  &#39;
+	&	&amp;	&#38;	&#x26;	ampersand
+	<	&lt;	&#60;	&#x3C;	less than
+	>	&gt;	&#62;	&#x3E;	greater than
+	 	&nbsp;	&#160;	&#xA0;	no-break space = non-breaking space
+	"   &quot;  &#34;
+	'   &apos;  &#39;
 
 support entities:
-  https://www.freeformatter.com/html-entities.html#ascii-characters
+   https://www.freeformatter.com/html-entities.html#ascii-characters
 */
 
 
 
 /*
   *start = '&'
-  *end   = ';'
-
-  return _NG
+  *end  = ';'
 */
 static inline uint8_t 
 _tf_html_entiry_convert(uint8_t* start, uint8_t* end)
