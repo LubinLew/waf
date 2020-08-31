@@ -22,7 +22,7 @@
 	<	&lt;	&#60;	&#x3C;	less than
 	>	&gt;	&#62;	&#x3E;	greater than
 	 	&nbsp;	&#160;	&#xA0;	no-break space = non-breaking space
-	"   &quot;  &#34;
+	"   &quot;  &#34;   &#x22;
 	'   &apos;  &#39;
 
 support entities:
@@ -75,19 +75,16 @@ _tf_html_entiry_convert(uint8_t* start, uint8_t* end)
 			switch (len) {
 			case 1: /* &#1 ~ &#9 */
 				ch1 = _num(start[0]);
-				_DBG("[DEC][1-byte] = [%d], char = [%c]", ch1, _chr(ch1));
 				return _chr(ch1);
 			case 2:
 				ch1 = _num(start[0]);
 				ch2 = _num(start[1]);
-				_DBG("[DEC][2-byte] = [%d,%d]", ch1, ch2);
 				if ((ch1 | ch2) != _NG) {
 					return _chr(_DEC2VAL(ch1, ch2));
 				}
 				
 				return _NG;
 			case 3:
-				_DBG("[DEC][3-byte] = [%d,%d,%d]", _num(start[0]), _num(start[1]), _num(start[2]));
 				ch1 = _num(start[0]);
 				if (ch1 != 1) {
 					return _NG;
@@ -159,9 +156,9 @@ tf_html_entity_decode(uint8_t* data, size_t* len)
 {
 	uint8_t* ch   = data;
 	uint8_t* pret = data;
-	uint8_t* end  = data + *len - 1;
+	uint8_t* end  = data + *len;
 	uint8_t* entity_start = NULL;
-	uint8_t ret;
+	uint8_t  ret;
 
 	_DBG("ch postion [%p], end [%p]", ch, end);
 
@@ -169,7 +166,7 @@ tf_html_entity_decode(uint8_t* data, size_t* len)
 		switch (*ch) {
 		case '&' :
 			if (entity_start) {/* normal */
-				_DBG("Invalid Format [%s]", _str_output(entity_start, ch));
+				_DBG("Invalid Format [%s]", _str_output(entity_start, ch+1));
 				_copy(entity_start, ch, data);
 			} else {
 				_DBG("Find & [%p]", ch);
@@ -179,15 +176,15 @@ tf_html_entity_decode(uint8_t* data, size_t* len)
 
 		case ';' :
 			if (entity_start) { /* convert */
-				_DBG("Find ; [%p], %s", ch, _str_output(entity_start, ch + 1));
+				_DBG("Find ; [%s]", _str_output(entity_start, ch+1));
 				ret = _tf_html_entiry_convert(entity_start, ch);
 				 if (ret != _NG){
-					_DBG("Valid Format [%s] > [%c]", _str_output(entity_start, ch+1), ret);
+					_CORDBG("Valid Format [%s] > [%c]", _str_output(entity_start, ch+1), ret);
 					*(data++) = ret;
 					++ch;
 				} else {
 					++ch;
-					_DBG("Invalid Format [%s]", _str_output(entity_start, ch));
+					_DBG("Invalid Format [%s]", _str_output(entity_start, ch+1));
 					_copy(entity_start, ch, data);
 				}
 
@@ -203,7 +200,7 @@ tf_html_entity_decode(uint8_t* data, size_t* len)
 				_DBG("Normal Character [%c]", ch[0]);
 				*(data++) = *(ch++);
 			}else {
-				_DBG("+ Keep data [%c]", ch[0]);
+//				_DBG("+ Keep data [%c]", ch[0]);
 				++ch;
 			}
 			break;
@@ -211,7 +208,7 @@ tf_html_entity_decode(uint8_t* data, size_t* len)
 	}
 
 	if (entity_start) { /* normal */
-		_DBG("Remain data [%s]", _str_output(entity_start, ch + 1));
+		_DBG("Remain data [%s]", _str_output(entity_start, ch));
 		_copy(entity_start, ch, data);
 	}
 
@@ -228,26 +225,21 @@ int main(int argc, const char* argv[])
 	uint8_t* buf, *tmp;
 	size_t len;
 
-	const uint8_t *urls[] = {
-		(uint8_t *)"<&amp;>",
-		(uint8_t *)"A&lt; &gt;B",
-		(uint8_t *)"t&nbsp;t",
-		(uint8_t *)"right&amp",
-		(uint8_t *)"2&qwertyuiop",
-		(uint8_t *)"3&qwertyui;11",
-		(uint8_t *)"1&#1;&#21;&&&&&&&&",
-		(uint8_t *)"3&#30;&#31;&#32&",
-		(uint8_t *)"4&#160;z&#170;y&#200;x&#1000;u",
-		(uint8_t *)"5&#x31;z&#x61;y&#x00000025;x&#x1000;u",
+	const test_util_t arr[] = {
+		{"&amp;&#38;&#x26;",    "&&&"},
+		{"&lt;&#60;&#x3C;",     "<<<"},
+		{"&gt;&#62;&#x3e;",     ">>>"},
+		{"&quot;&#34;&#x22;",	"\"\"\""},
+		{"&apos;&#39;&#x27;",	"'''"},
 	};
 
-	for (i = 0; i < sizeof(urls)/sizeof(char*); i++) {
-		buf = (uint8_t*)strdup((char*)urls[i]);
+	for (i = 0; i < sizeof(arr)/sizeof(test_util_t); i++) {
+		buf = (uint8_t*)strdup(arr[i].target);
 		tmp = buf;
-		len = strlen((char*)buf) + 1;
+		len = strlen((char*)buf);
 		printf("=[%d]Decode: [%s]\n", i, buf);
 		buf = tf_html_entity_decode(buf, &len);
-		printf("=Result: [%s][len:%zd/%zd]\n\n", buf, len, strlen((char*)buf));
+		printf("=Result: [%s][%s][len:%zd/%zd]\n\n", buf, _cmp_result(buf, arr[i].match), len, strlen((char*)buf));
 		free(tmp);
 	}
 

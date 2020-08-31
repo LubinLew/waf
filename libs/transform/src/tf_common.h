@@ -66,15 +66,8 @@ typedef enum {
 	static char *_str_output(uint8_t *_start, uint8_t *_end) __unused__;
 	static char *_cmp_result(void* s1, void* s2) __unused__;
 
-	char* _cmp_result(void* s1, void* s2) {
-		if (!strcmp((char*)s1, (char*)s2)) {
-			return "OK";
-		}
-		return "NG";
-	}
-
 	/* Debug Output Wrapper */
-	static char *_str_output(uint8_t *_start, uint8_t *_end) {
+	char *_str_output(uint8_t *_start, uint8_t *_end) {
 		static int index = 0;
 		static char buf[5][1024];
 		char *store = buf[(index++) % 5];
@@ -82,6 +75,13 @@ typedef enum {
 		memcpy(store, (char *)_start, len);
 		store[len] = '\0';
 		return store;
+	}
+	
+	char* _cmp_result(void* s1, void* s2) {
+		if (!strcmp((char*)s1, (char*)s2)) {
+			return "OK";
+		}
+		return "NG";
 	}
 
 	#define _DBG(fmt, ...) fprintf(stderr, ">>[%s:%3d]"fmt"\n", __FUNCTION__, __LINE__, __VA_ARGS__)
