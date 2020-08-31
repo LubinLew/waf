@@ -40,7 +40,7 @@ uint8_t* tf_url_decode(uint8_t* data, size_t* len)
 
 			/* decode Percent-Encoding data */
 			if(likely((ret = g_url_charset[_HEX2VAL(ch1, ch2)]) != _NG)) {
-				_DBG("Valid Format [%c%c%c] > [%c]", ch[0], ch[1], ch[2], ret);
+				_CORDBG("Valid Format [%c%c%c] > [%c]", ch[0], ch[1], ch[2], ret);
 				*(data++) = ret;	
 			} else { /* convert failed, so keep it */
 				_DBG("Invalid Format [%c%c%c], val[%d,%d]", ch[0], ch[1], ch[2], ch1, ch2);
@@ -93,7 +93,7 @@ int main(int argc, const char* argv[])
 	for (i = 0; i < sizeof(urls)/sizeof(char*); i++) {
 		buf = (uint8_t*)strdup((char*)urls[i]);
 		tmp = buf;
-		len = strlen((char*)buf) + 1;
+		len = strlen((char*)buf);
 		printf("=[%d]Decode: [%s]\n", i, buf);
 		buf = tf_url_decode(buf, &len);
 		printf("=Result: [%s][len:%zd/%zd]\n\n", buf, len, strlen((char*)buf));

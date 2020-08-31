@@ -37,7 +37,7 @@ uint8_t* ts_compress_space(uint8_t* data, size_t* len)
 	uint8_t* ch   = data;
 	uint8_t* pret = data;
 	uint8_t* end  = data + *len;
-	uint8_t  last_is_space = TS_FALSE; 
+	bool_t   last_is_space = TS_FALSE; 
 
 	while (ch < end) {
 		if (_is_space(*ch)) {

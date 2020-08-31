@@ -19,8 +19,10 @@
 #define __unused__  __attribute__((unused))
 
 /* function return */
-#define TS_TRUE   (1)
-#define TS_FALSE  (0)
+typedef enum {
+	TS_FALSE,
+	TS_TRUE
+} bool_t;
 
 /* decode to space */
 #define _SP (uint8_t)(0x20)
@@ -57,21 +59,36 @@
 
 /*------------------------------------ DEBUG ---------------------------------------*/
 #ifdef __DEBUG
-/* Debug Output Wrapper */
-static char *_str_output(uint8_t *_start, uint8_t *_end) __unused__;
-static char *_str_output(uint8_t *_start, uint8_t *_end)
-{
-	static int index = 0;
-	static char buf[5][1024];
-	char *store = buf[(index++) % 5];
-	size_t len = _end - _start;
-	memcpy(store, (char *)_start, len);
-	store[len] = '\0';
-	return store;
-}
-#define _DBG(fmt, ...) fprintf(stderr, ">>[%s:%3d]"fmt"\n", __FUNCTION__, __LINE__, __VA_ARGS__)
+	typedef struct _test_util {
+		char* target;
+		char* match;
+	}test_util_t;
+	static char *_str_output(uint8_t *_start, uint8_t *_end) __unused__;
+	static char *_cmp_result(void* s1, void* s2) __unused__;
+
+	char* _cmp_result(void* s1, void* s2) {
+		if (!strcmp((char*)s1, (char*)s2)) {
+			return "OK";
+		}
+		return "NG";
+	}
+
+	/* Debug Output Wrapper */
+	static char *_str_output(uint8_t *_start, uint8_t *_end) {
+		static int index = 0;
+		static char buf[5][1024];
+		char *store = buf[(index++) % 5];
+		size_t len = _end - _start;
+		memcpy(store, (char *)_start, len);
+		store[len] = '\0';
+		return store;
+	}
+
+	#define _DBG(fmt, ...) fprintf(stderr, ">>[%s:%3d]"fmt"\n", __FUNCTION__, __LINE__, __VA_ARGS__)
+	#define _CORDBG(fmt, ...) fprintf(stderr, ">>[%s:%3d]\033[7m"fmt"\033[0m\n", __FUNCTION__, __LINE__, __VA_ARGS__)
 #else /* __DEBUG */
 	#define _DBG(fmt, ...)
+	#define _CORDBG(fmt, ...) 
 #endif /* __DEBUG */
 
 
