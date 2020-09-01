@@ -31,13 +31,13 @@
 	
 	char* _cmp_result(void* s1, void* s2) {
 		if (!strcmp((char*)s1, (char*)s2)) {
-			return "OK";
+			return "\033[42;0mOK\033[0m";
 		}
-		return "NG";
+		return "\033[32;0mNG\033[0m";
 	}
 
-	#define _DBG(fmt, ...) fprintf(stderr, ">>[%s:%3d]"fmt"\n", __FUNCTION__, __LINE__, __VA_ARGS__)
-	#define _CORDBG(fmt, ...) fprintf(stderr, ">>[%s:%3d]\033[7m"fmt"\033[0m\n", __FUNCTION__, __LINE__, __VA_ARGS__)
+	#define _DBG(fmt, ...)    printf(">>[%s:%3d]"fmt"\n", __FUNCTION__, __LINE__, __VA_ARGS__)
+	#define _CORDBG(fmt, ...) printf(">>[%s:%3d]\033[7m"fmt"\033[0m\n", __FUNCTION__, __LINE__, __VA_ARGS__)
 #else /* __DEBUG */
 	#define _DBG(fmt, ...)
 	#define _CORDBG(fmt, ...) 

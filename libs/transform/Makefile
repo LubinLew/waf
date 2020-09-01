@@ -58,9 +58,8 @@ base64_test:src/tf_base64_decode.c ${OBJDIR}/tf_common.o
 	${CC} ${CFLAGS} -D__DEBUG -D__TF_BASE64_TEST $<
 	${CC} tf_base64_decode.o ${OBJDIR}/tf_common.o -o $@
 
-js_test:src/tf_js_decode.c ${OBJDIR}/tf_common.o
-	${CC} ${CFLAGS} -D__DEBUG -D__TF_JS_TEST $<
-	${CC} tf_js_decode.o ${OBJDIR}/tf_common.o -o $@
+js_test:${LIBNAME}
+	${CC} ${TEST_CFLAGS} ${TEST_MACRO} ${TEST_INCS} test/tf_js_test.c -o $@ ${TEST_LFLAGS} 
 
 
 
