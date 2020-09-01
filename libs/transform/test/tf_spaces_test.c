@@ -57,3 +57,33 @@ uint8_t* ts_compress_space(uint8_t* data, size_t* len)
 	return pret;
 }
 
+#ifdef __TF_SPACE_TEST
+int main(int argc, char* argv[])
+{
+	int i = 0;
+	uint8_t* buf, *tmp;
+	size_t len;
+
+	const uint8_t* urls[] = {
+		(uint8_t*)"  lefttrimspace",
+		(uint8_t*)"righttrimspace  ",
+		(uint8_t*)"middle          spaces",
+		(uint8_t*)"    mix condition     "
+	};
+
+	for (i = 0; i < sizeof(urls)/sizeof(char*); i++) {
+		buf = (uint8_t*)strdup((char*)urls[i]);
+		tmp = buf;
+		len = strlen((char*)buf) + 1;
+		printf("=[%d]proc space: [%s][len:%zd]\n", i, buf, len);
+		buf = ts_compress_space(buf, &len);
+		printf("=compress: [%s][len:%zd]\n", buf, len);
+		buf = ts_delete_space(buf, &len);
+		printf("=delete  : [%s][len:%zd]\n\n", buf, len);
+		free(tmp);
+	}
+
+	return 0;
+}
+#endif /* __TF_SPACE_TEST */
+

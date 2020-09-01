@@ -12,11 +12,12 @@
 #include <string.h>
 #include <stdint.h>
 
+#include "tf_debug.h"
+
 
 /* provide the compiler with branch prediction information */
 #define likely(x)   __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
-#define __unused__  __attribute__((unused))
 
 /* function return */
 typedef enum {
@@ -57,39 +58,6 @@ typedef enum {
 #define _DEC2VAL(_val1, _val2) ((uint8_t)((uint8_t)((_val1 * 10) + (_val2))))
 #define _HEXCHR2VAL(_val1, _val2) _HEX2VAL(_hex(_val1), _hex(_val2))
 
-/*------------------------------------ DEBUG ---------------------------------------*/
-#ifdef __DEBUG
-	typedef struct _test_util {
-		char* target;
-		char* match;
-	}test_util_t;
-	static char *_str_output(uint8_t *_start, uint8_t *_end) __unused__;
-	static char *_cmp_result(void* s1, void* s2) __unused__;
-
-	/* Debug Output Wrapper */
-	char *_str_output(uint8_t *_start, uint8_t *_end) {
-		static int index = 0;
-		static char buf[5][1024];
-		char *store = buf[(index++) % 5];
-		size_t len = _end - _start;
-		memcpy(store, (char *)_start, len);
-		store[len] = '\0';
-		return store;
-	}
-	
-	char* _cmp_result(void* s1, void* s2) {
-		if (!strcmp((char*)s1, (char*)s2)) {
-			return "OK";
-		}
-		return "NG";
-	}
-
-	#define _DBG(fmt, ...) fprintf(stderr, ">>[%s:%3d]"fmt"\n", __FUNCTION__, __LINE__, __VA_ARGS__)
-	#define _CORDBG(fmt, ...) fprintf(stderr, ">>[%s:%3d]\033[7m"fmt"\033[0m\n", __FUNCTION__, __LINE__, __VA_ARGS__)
-#else /* __DEBUG */
-	#define _DBG(fmt, ...)
-	#define _CORDBG(fmt, ...) 
-#endif /* __DEBUG */
 
 
 #endif /* __TF_COMMON_H__ */

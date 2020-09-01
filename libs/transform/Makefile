@@ -1,14 +1,17 @@
 LIBNAME = libtf.a
+#############################################################
 OBJDIR = target/src
-CC = gcc
-CFLAGS = -g -Wall -c
-DMACRO := 
+CFLAGS = -Wall -MD -O0 -ggdb -c
 LFLAGS = 
-INCS = -Iinc
+MACRO = -D__DEBUG
+INCS =
+CC = gcc
 
-ifeq ($(DEBUG),1)
-	DMACRO += -D__DEBUG -D__TF_TEST
-endif
+
+TEST_INCS   = -Iinc -Isrc
+TEST_CFLAGS = -g -Wall
+TEST_LFLAGS = -Ltarget -ltf
+TEST_MACRO  = -D__DEBUG
 
 #############################################################
 
@@ -24,25 +27,24 @@ SRCLIST = src/tf_common.c                 \
 #############################################################
 .PYONY: all clean
 
-all:targetdir build
+all: ${LIBNAME}
 	@ls -lh target/${LIBNAME}
 
-targetdir:
-	mkdir -p ${OBJDIR}
-	
-build:$(SRCLIST:%.c=target/%.o)
-	ar crs target/${LIBNAME} $^
+${LIBNAME}: $(SRCLIST:%.c=target/%.o)
+	ar crs target/$@ $^
 	
 clean:
-	rm -rf target
+	@rm -f target/src/{*.o,*.d}
+	@rm -f target/test/{*.o,*.d}
+	@rm -f target/${LIBNAME}
+	@echo "ALL Clear !!!"
 
 #############################################################
-test_macro:targetdir
+test:url_test space_test entity_test base64_test js_test
 
 
-url_test:src/tf_url_decode.c ${OBJDIR}/tf_common.o
-	${CC} ${CFLAGS} -D__DEBUG -D__TF_URL_TEST $<
-	${CC} tf_url_decode.o ${OBJDIR}/tf_common.o -o $@
+url_test:${LIBNAME}
+	${CC} ${TEST_CFLAGS} ${TEST_MACRO} ${TEST_INCS} test/tf_url_test.c -o $@ ${TEST_LFLAGS} 
 
 space_test:src/tf_spaces.c ${OBJDIR}/tf_common.o
 	${CC} ${CFLAGS} -D__DEBUG -D__TF_SPACE_TEST $<
@@ -61,9 +63,9 @@ js_test:src/tf_js_decode.c ${OBJDIR}/tf_common.o
 	${CC} tf_js_decode.o ${OBJDIR}/tf_common.o -o $@
 
 
-test:url_test space_test entity_test base64_test js_test
+
 
 #############################################################
 target/%.o: %.c
-	${CC} ${CFLAGS} ${DMACRO} ${INCS} $< -o $@ ${LFLAGS}
+	${CC} ${CFLAGS} ${MACRO} ${INCS} $< -o $@ ${LFLAGS}
 	
