@@ -24,12 +24,53 @@ const static int g_compile_flags[256] = {
 };
 
 
-static int
-_hs_flags_covert(const char* flags)
+static unsigned int
+_hs_flags_covert(const char* flag_str)
 {
+    char* ch = flag_str;
+    unsigned int flags = 0;
+    while (*ch) {
+        switch (*ch) {
+        case 'i' :
+            flags |= HS_FLAG_CASELESS;
+            break;
+        case 'd' :
+            flags |= HS_FLAG_DOTALL;
+            break;
+        case 'm' :
+            flags |= HS_FLAG_MULTILINE;
+            break;
+        case 's' :
+            flags |= HS_FLAG_SINGLEMATCH;
+            break;
+        case 'e' :
+            flags |= HS_FLAG_ALLOWEMPTY;
+            break;
+        case 'u' :
+            flags |= HS_FLAG_UTF8;
+            break;
+        case 'p' :
+            flags |= HS_FLAG_UCP;
+            break;
+        case 'f' :
+            flags |= HS_FLAG_PREFILTER;
+            break;
+        case 'l' :
+            flags |= HS_FLAG_SOM_LEFTMOST
+        case 'c' :
+            flags |= HS_FLAG_COMBINATION;
+            break;
+        case 'q' :
+            flags |= HS_FLAG_QUIET;
+            break;
+        default:
+            fprintf(stderr, "Invalid flags [%c] !\n", *ch);
+            break;
+        }
+        ++ch;
+    }
 
-
-    return 0;
+    return flags;
 }
 
 
