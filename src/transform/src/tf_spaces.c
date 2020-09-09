@@ -14,46 +14,46 @@ extern uint8_t g_space_charset[];
 
 uint8_t* ts_delete_space(uint8_t* data, size_t* len)
 {
-	uint8_t* ch   = data;
-	uint8_t* pret = data;
-	uint8_t* end  = data + *len;
+    uint8_t* ch   = data;
+    uint8_t* pret = data;
+    uint8_t* end  = data + *len;
 
-	while (ch < end) {
-		if (_not_space(*ch)) {
-			*(data++) = *ch;
-		}
-		++ch;
-	}
+    while (ch < end) {
+        if (_not_space(*ch)) {
+            *(data++) = *ch;
+        }
+        ++ch;
+    }
 
-	*len = data - pret;
-	*data = '\0';
-	return pret;
+    *len = data - pret;
+    *data = '\0';
+    return pret;
 }
 
 
 
 uint8_t* ts_compress_space(uint8_t* data, size_t* len)
 {
-	uint8_t* ch   = data;
-	uint8_t* pret = data;
-	uint8_t* end  = data + *len;
-	bool_t   last_is_space = TS_FALSE; 
+    uint8_t* ch   = data;
+    uint8_t* pret = data;
+    uint8_t* end  = data + *len;
+    bool_t   last_is_space = TS_FALSE; 
 
-	while (ch < end) {
-		if (_is_space(*ch)) {
-			if (TS_FALSE == last_is_space) {
-				*(data++) = _SP;
-				last_is_space = TS_TRUE;
-			}
-		} else {
-			*(data++) = *ch;
-			last_is_space = TS_FALSE;
-		}
-		++ch;
-	}
+    while (ch < end) {
+        if (_is_space(*ch)) {
+            if (TS_FALSE == last_is_space) {
+                *(data++) = _SP;
+                last_is_space = TS_TRUE;
+            }
+        } else {
+            *(data++) = *ch;
+            last_is_space = TS_FALSE;
+        }
+        ++ch;
+    }
 
-	*len = data - pret;
-	*data = '\0';
-	return pret;
+    *len = data - pret;
+    *data = '\0';
+    return pret;
 }
 

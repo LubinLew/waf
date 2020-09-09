@@ -9,11 +9,11 @@ extern "C" {
 
 /*-------------------------------------------------------------------*/
 typedef struct _db_mgt {
-	int 	          version;
-	int 	          count;
-	signature_info_t* bucket;
-	char*	          mem_pos;
-	char	          memory[0];
+    int               version;
+    int               count;
+    signature_info_t* bucket;
+    char*              mem_pos;
+    char              memory[0];
 } db_mgt_t;
 
 
