@@ -30,26 +30,56 @@ typedef enum _db_type {
 	DB_FMT_MEM
 } db_type_t;
 
+typedef enum _risk_level {
+	RISK_LVL_SUPER = 0,
+	RISK_LVL_HIGH,
+	RISK_LVL_MEDIUM,
+	RISK_LVL_LOW
+} risk_level_t;
+
+
+typedef struct _signature_info {
+	uint32_t id;
+	uint8_t* name;
+	uint8_t* pattern;
+	uint8_t* flags;
+	uint8_t  category_id;
+	uint8_t* category_str;
+	uint8_t  sub_category_id;
+	uint8_t  sub_category_str;
+	uint8_t* cve_id_str;
+	uint8_t* description_str;
+	risk_level_t risk_level;
+} signature_info_t;
+
+
+
 /* load signatures */
 int  
-waf_engine_init(db_type_t type, void* arg);
+waf_engine_init(void);
 
-/* reload signatures */
+
+/* (re)load signatures */
 int  
-waf_engine_reload(db_type_t type, void* arg);
+waf_engine_set_database(db_type_t type, void* arg);
+
+
+int 
+waf_engine_set_level(risk_level_t level);
+
+
+/* do your own whitelist match */
+typedef int (*WHITELIST_CB)(unsigned int id);
+
+int 
+waf_engine_set_whitelist_cb(WHITELIST_CB cb);
 
 
 
-/* hyperscan match event callback function type */
-typedef int (*match_event_handler)(unsigned int id,
-            unsigned long long from, unsigned long long to,
-            unsigned int flags, void *context);
 
 /* scanning */
-int  
-waf_engine_scan(http_field_t field,       \
-			uint8_t data, size_t len,     \
-			match_event_handler handler, void* context);
+signature_info_t*   
+waf_engine_scan(http_field_t field,      uint8_t* data, size_t len);
 
 
 /* cleanup */
