@@ -15,12 +15,21 @@ extern "C" {
 
 typedef struct _hs_mgt hs_mgt_t;
 
+
 int
-hs_load_database(db_mgt_t* db, hs_mgt_t** pmgt);
+hs_create_database(db_mgt_t* mdb, hs_mgt_t** pmgt);
+
 
 int 
-hs_free_database(hs_mgt_t* pmgt)
+hs_destroy_database(hs_mgt_t* mgt);
 
+
+signature_info_t* 
+hs_scan_database(hs_mgt_t* mgt, unsigned char* data, size_t length);
+
+
+int
+hs_set_scan_level(hs_mgt_t* mgt, risk_level_t level);
 
 /*-----------------------------------------------------------------------------------*/
 #ifdef __cplusplus
