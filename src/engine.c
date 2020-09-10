@@ -107,7 +107,7 @@ waf_engine_set_level(engine_mgt_t* mgt, risk_level_t level)
     if (mgt) {
         mgt->risk_level = level;
         if (mgt->hs) {
-            hs_wrapper_whitelist(mgt->hs, level)
+            hs_wrapper_level(mgt->hs, level);
         }
 
         return 0;
@@ -124,7 +124,7 @@ waf_engine_set_whitelist_cb(engine_mgt_t* mgt, WHITELIST_CB cb)
     if (mgt) {
         mgt->wcb = cb;
         if (mgt->hs) {
-            hs_set_whitelist_cb(mgt->hs, cb);
+            hs_wrapper_whitelist(mgt->hs, cb);
         }
 
         return 0;
@@ -182,7 +182,7 @@ int
 waf_engine_exit(engine_mgt_t* mgt)
 {
     if (mgt) {
-        hs_destroy_database(mgt->hs);
+        hs_wrapper_destroy(mgt->hs);
         signature_database_close(mgt->db);
         free(mgt);
     }

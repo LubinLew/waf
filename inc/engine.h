@@ -1,7 +1,8 @@
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
 
-#include "engine_type.h"
+#include <stdint.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,7 +64,7 @@ waf_engine_set_level(engine_mgt_t* mgt, risk_level_t level);
 
 
 /* do your own whitelist match */
-typedef int (*WHITELIST_CB)(uin32_t id);
+typedef int (*WHITELIST_CB)(uint32_t id);
 
 int 
 waf_engine_set_whitelist_cb(engine_mgt_t* mgt, WHITELIST_CB cb);
