@@ -45,14 +45,15 @@ ${LIBNAME}.so: ${OBJS}
 
 .PYONY: clean
 clean:
-	@rm -rf ${OUTDIR}
-	@echo "ALL Clear !!!"
+	@ rm -rf ${OUTDIR}
+	@ echo "ALL Clear !!!"
 
 test:
-	@echo "${OBJS}"
+	@ echo "${OBJS}"
+
 #############################################################
 ${OUTDIR}/%.o:%.c
-	@mkdir -p $(@D)
-	@echo "[CC] $^"
-	@${CC} ${CFLAGS} ${INCS} $< -o $@ ${LFLAGS}
+	@ mkdir -p $(@D)
+	@ echo "[CC] $^"
+	@ ${CC} ${CFLAGS} ${INCS} $< -o $@ ${LFLAGS}
 
