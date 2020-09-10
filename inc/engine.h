@@ -41,7 +41,7 @@ typedef struct _signature_info {
 	uint8_t  category_id;
 	uint8_t* category_str;
 	uint8_t  sub_category_id;
-	uint8_t  sub_category_str;
+	uint8_t* sub_category_str;
 	uint8_t* cve_id_str;
 	uint8_t* description_str;
 	risk_level_t risk_level;

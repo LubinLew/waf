@@ -5,6 +5,7 @@
 */
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 
 #include <hs.h>
@@ -27,9 +28,9 @@ struct _hs_mgt {
 
 
 static unsigned int
-_hs_flags_covert(const char* flag_str)
+_hs_flags_covert(const uint8_t* flag_str)
 {
-    char* ch = flag_str;
+    const uint8_t* ch = flag_str;
     unsigned int flags = 0;
     while (*ch) {
         switch (*ch) {
@@ -82,10 +83,10 @@ hs_wrapper_create(db_mgt_t* mdb, hs_mgt_t** pmgt)
 {
     int i, ret;
     int count = mdb->count;
-    const char* pattern;
+    char** pattern;
     unsigned int* ids;
     unsigned int* flags;
-    hs_error_t compile_err;
+    hs_compile_error_t* compile_err;
     hs_mgt_t* mgt;
 
     *pmgt = NULL;
@@ -100,22 +101,22 @@ hs_wrapper_create(db_mgt_t* mdb, hs_mgt_t** pmgt)
     ids     = calloc(sizeof(unsigned int), count);
     flags   = calloc(sizeof(unsigned int), count);
     if (!pattern || !ids || !flags) {
-        fprintf(stderr, "ERROR: calloc() failed, ", strerror(errno));
+        fprintf(stderr, "ERROR: calloc() failed, %s\n", strerror(errno));
         return -1;
    }
 
     for (i = 0; i < mdb->count; i++) {
-        pattern[i] = mdb->bucket[i].pattern;
+        pattern[i] = (char*)mdb->bucket[i].pattern;
         ids[i]     = i; /* here, not use the real id, this index can quickly search signature info */
         flags[i]   = _hs_flags_covert(mdb->bucket[i].flags);
     }
 
     /* multiple regular expression compiler with extended parameter support */
-    ret = hs_compile_ext_multi(pattern, flags, ids, NULL, count, 
+    ret = hs_compile_ext_multi((const char*const*)pattern, flags, ids, NULL, count, 
                         HS_MODE_BLOCK, NULL, &mgt->hs_database, &compile_err);
-    free(pattern);
-    free(ids);
-    free(flags);
+    free((void*)pattern);
+    free((void*)ids);
+    free((void*)flags);
 
     if (ret) {
         fprintf(stderr, "ERROR: Unable to compile pattern: %s\n", compile_err->message);

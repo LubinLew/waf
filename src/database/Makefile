@@ -1,5 +1,5 @@
 LIBNAME = libdbl.a
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -Werror -O2
 LFLAGS = `pkg-config --libs json-c`
 INCS   = `pkg-config --cflags json-c` -Iinc -I../../inc
 

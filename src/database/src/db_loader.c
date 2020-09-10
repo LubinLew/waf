@@ -34,11 +34,11 @@ _db_infos_alloc(int count, size_t file_size)
 
 
 
-static char* 
+static uint8_t* 
 _db_string_storage(db_mgt_t* mgt, struct json_object* jo_str)
 {
     const char* data = json_object_get_string(jo_str);
-    char* pos = mgt->mem_pos;
+    uint8_t* pos = mgt->mem_pos;
     size_t len = strlen(data) + 1; // store '\0'
     memcpy(mgt->mem_pos, data, len);
     mgt->mem_pos += len;
@@ -50,7 +50,7 @@ _db_string_storage(db_mgt_t* mgt, struct json_object* jo_str)
 int 
 db_signature_open(const char* path, db_mgt_t** pmgt) 
 {
-    int     i, arr_cnt;
+    int     i;
     int32_t count;
     int32_t version;
 
@@ -94,7 +94,7 @@ db_signature_open(const char* path, db_mgt_t** pmgt)
     mgt = _db_infos_alloc(count, st.st_size);
     mgt->version = version;
 
-    for(i = 0;i < arr_cnt; i++) {
+    for(i = 0;i < count; i++) {
         signature_info_t* sign_tmp;
 
         struct json_object *jo_id;
@@ -119,17 +119,19 @@ db_signature_open(const char* path, db_mgt_t** pmgt)
         json_object_object_get_ex(jo_one_sign, "category-str",       &jo_category_str);
         json_object_object_get_ex(jo_one_sign, "sub_category-id",    &jo_sub_category_id);
         json_object_object_get_ex(jo_one_sign, "sub_category-str",   &jo_sub_category_str);
+        json_object_object_get_ex(jo_one_sign, "cve-id",             &jo_cve_id);
         json_object_object_get_ex(jo_one_sign, "description",        &jo_desc);
 
         sign_tmp                   = &mgt->bucket[i];
         sign_tmp->id               = json_object_get_int(jo_id);
         sign_tmp->pattern          = _db_string_storage(mgt, jo_pattern);
-        sign_tmp->flags            = _db_string_storage(jo_flags);
+        sign_tmp->flags            = _db_string_storage(mgt, jo_flags);
         sign_tmp->risk_level       = json_object_get_int(jo_level);
-        sign_tmp->category_id      = json_object_get_int(mgt, jo_category_id);
+        sign_tmp->category_id      = json_object_get_int(jo_category_id);
         sign_tmp->category_str     = _db_string_storage(mgt, jo_category_str);
-        sign_tmp->sub_category_id  = json_object_get_int(mgt, jo_sub_category_id);
+        sign_tmp->sub_category_id  = json_object_get_int(jo_sub_category_id);
         sign_tmp->sub_category_str = _db_string_storage(mgt, jo_sub_category_str);
+        sign_tmp->cve_id_str       = _db_string_storage(mgt, jo_cve_id);
         sign_tmp->description_str  = _db_string_storage(mgt, jo_desc);
     }    
 
