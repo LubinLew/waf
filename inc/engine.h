@@ -1,7 +1,7 @@
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
 
-#include <stdint.h>
+#include "engine_type.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,7 +72,7 @@ waf_engine_set_whitelist_cb(engine_mgt_t* mgt, WHITELIST_CB cb);
 
 
 /* scanning */
-signature_info_t* 
+const signature_info_t* 
 waf_engine_scan(engine_mgt_t* mgt, http_field_t field, uint8_t* data, size_t len);
 
 

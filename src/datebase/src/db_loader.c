@@ -15,14 +15,15 @@
 
 /* everything is stored in the db_mgt_t structure */
 static db_mgt_t* 
-_database_alloc(int count, size_t file_size)
+_db_infos_alloc(int count, size_t file_size)
 {
     size_t bucket = sizeof(signature_info_t) * (count + 1);
     db_mgt_t* mgt = malloc(file_size + bucket);
     if (!mgt) {
-        perror("malloc failed, ");
+        fprintf(stderr, "malloc failed, %s\n", strerror(errno));
         return NULL;
     }
+
     mgt->count = count;
     mgt->bucket = (signature_info_t*)mgt->memory;
     mgt->mem_pos = mgt->memory + bucket;
@@ -34,7 +35,7 @@ _database_alloc(int count, size_t file_size)
 
 
 static char* 
-_store_string_oject(db_mgt_t* mgt, struct json_object* jo_str)
+_db_string_storage(db_mgt_t* mgt, struct json_object* jo_str)
 {
     const char* data = json_object_get_string(jo_str);
     char* pos = mgt->mem_pos;
@@ -47,9 +48,8 @@ _store_string_oject(db_mgt_t* mgt, struct json_object* jo_str)
 
 
 int 
-database_open(const char* path, db_mgt_t** pmgt) 
+db_signature_open(const char* path, db_mgt_t** pmgt) 
 {
-
     int     i, arr_cnt;
     int32_t count;
     int32_t version;
@@ -91,7 +91,7 @@ database_open(const char* path, db_mgt_t** pmgt)
     version = json_object_get_int(jo_version);
     count = json_object_array_length(jo_signs);
 
-    mgt = _database_alloc(count, st.st_size);
+    mgt = _db_infos_alloc(count, st.st_size);
     mgt->version = version;
 
     for(i = 0;i < arr_cnt; i++) {
@@ -111,26 +111,26 @@ database_open(const char* path, db_mgt_t** pmgt)
         struct json_object *jo_one_sign;
 
         jo_one_sign = json_object_array_get_idx(jo_signs, i);
-        json_object_object_get_ex(jo_one_sign, "id",       &jo_id);
-        json_object_object_get_ex(jo_one_sign, "pattern",  &jo_pattern);
-        json_object_object_get_ex(jo_one_sign, "flags",    &jo_flags);
-        json_object_object_get_ex(jo_one_sign, "level",    &jo_level);
-        json_object_object_get_ex(jo_one_sign, "category-id",   &jo_category_id);
-        json_object_object_get_ex(jo_one_sign, "category-str",   &jo_category_str);
-        json_object_object_get_ex(jo_one_sign, "sub_category-id",   &jo_sub_category_id);
+        json_object_object_get_ex(jo_one_sign, "id",                 &jo_id);
+        json_object_object_get_ex(jo_one_sign, "pattern",            &jo_pattern);
+        json_object_object_get_ex(jo_one_sign, "flags",              &jo_flags);
+        json_object_object_get_ex(jo_one_sign, "level",              &jo_level);
+        json_object_object_get_ex(jo_one_sign, "category-id",        &jo_category_id);
+        json_object_object_get_ex(jo_one_sign, "category-str",       &jo_category_str);
+        json_object_object_get_ex(jo_one_sign, "sub_category-id",    &jo_sub_category_id);
         json_object_object_get_ex(jo_one_sign, "sub_category-str",   &jo_sub_category_str);
-        json_object_object_get_ex(jo_one_sign, "description",     &jo_desc);
+        json_object_object_get_ex(jo_one_sign, "description",        &jo_desc);
 
         sign_tmp                   = &mgt->bucket[i];
         sign_tmp->id               = json_object_get_int(jo_id);
-        sign_tmp->pattern          = _store_string_oject(mgt, jo_pattern);
-        sign_tmp->flags            = _store_string_oject(jo_flags);
+        sign_tmp->pattern          = _db_string_storage(mgt, jo_pattern);
+        sign_tmp->flags            = _db_string_storage(jo_flags);
         sign_tmp->risk_level       = json_object_get_int(jo_level);
         sign_tmp->category_id      = json_object_get_int(mgt, jo_category_id);
-        sign_tmp->category_str     = _store_string_oject(mgt, jo_category_str);
+        sign_tmp->category_str     = _db_string_storage(mgt, jo_category_str);
         sign_tmp->sub_category_id  = json_object_get_int(mgt, jo_sub_category_id);
-        sign_tmp->sub_category_str = _store_string_oject(mgt, jo_sub_category_str);
-        sign_tmp->description_str  = _store_string_oject(mgt, jo_desc);
+        sign_tmp->sub_category_str = _db_string_storage(mgt, jo_sub_category_str);
+        sign_tmp->description_str  = _db_string_storage(mgt, jo_desc);
     }    
 
     /* cleanup */
@@ -141,12 +141,14 @@ database_open(const char* path, db_mgt_t** pmgt)
     return 0;
 }
 
- void 
- database_close(db_mgt_t* mgt)
+int
+signature_database_close(db_mgt_t* mgt)
 {
     if (mgt) {
         free(mgt);
     }
+
+    return 0;
 }
 
 

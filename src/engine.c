@@ -71,22 +71,24 @@ waf_engine_set_database(engine_mgt_t* mgt, const char* path)
     db_mgt_t*  db;
     hs_mgt_t*  hs;
 
-    ret = database_open(path, &db);
+    ret = signature_database_open(path, &db);
     if (ret != 0) {
         return ret;
     }
 
-    ret = hs_create_database(db, &hs);
+    ret = hs_wrapper_create(db, &hs);
     if (ret != 0) {
         return ret;
     }
-    hs_set_scan_level(hs, mgt->risk_level);
+
+    hs_wrapper_level(hs, mgt->risk_level);
+    hs_wrapper_whitelist(mgt->hs, mgt->wcb);
 
     /* free old database */
     if (mgt->hs) { /* reload */
-        hs_destroy_database(mgt->hs);
+        hs_wrapper_destroy(mgt->hs);
         mgt->hs = NULL;
-        database_close(mgt->db);
+        signature_database_close(mgt->db);
         mgt->db = NULL;
     }
 
@@ -105,7 +107,7 @@ waf_engine_set_level(engine_mgt_t* mgt, risk_level_t level)
     if (mgt) {
         mgt->risk_level = level;
         if (mgt->hs) {
-            hs_set_scan_level(mgt->hs, level)
+            hs_wrapper_whitelist(mgt->hs, level)
         }
 
         return 0;
@@ -121,6 +123,10 @@ waf_engine_set_whitelist_cb(engine_mgt_t* mgt, WHITELIST_CB cb)
 {
     if (mgt) {
         mgt->wcb = cb;
+        if (mgt->hs) {
+            hs_set_whitelist_cb(mgt->hs, cb);
+        }
+
         return 0;
     }
 
@@ -130,7 +136,7 @@ waf_engine_set_whitelist_cb(engine_mgt_t* mgt, WHITELIST_CB cb)
 
 
 /* scanning */
-signature_info_t*   
+const signature_info_t*   
 waf_engine_scan(engine_mgt_t* mgt, http_field_t field, uint8_t* data, size_t len)
 {
     int map = g_decode_map[field];
@@ -153,10 +159,10 @@ waf_engine_scan(engine_mgt_t* mgt, http_field_t field, uint8_t* data, size_t len
     }
     
     data = ts_compress_space(data, &len);
-    info = hs_scan_database(mgt->hs, data, len);
+    info = hs_wrapper_scan(mgt->hs, data, len);
     if (!info) {
         data = ts_delete_space(data, &len);
-        info = hs_scan_database(mgt->hs, data, len);
+        info = hs_wrapper_scan(mgt->hs, data, len);
         if (!info) {
             if (HTTP_FIELD_URL == field) {
                 data = tf_base64url_decode(data, &len);
@@ -164,7 +170,7 @@ waf_engine_scan(engine_mgt_t* mgt, http_field_t field, uint8_t* data, size_t len
                 data = tf_base64_decode(data, &len);
             }
         }
-        info = hs_scan_database(mgt->hs, data, len);
+        info = hs_wrapper_scan(mgt->hs, data, len);
     }
 
     return info;
@@ -177,7 +183,7 @@ waf_engine_exit(engine_mgt_t* mgt)
 {
     if (mgt) {
         hs_destroy_database(mgt->hs);
-        database_close(mgt->db);
+        signature_database_close(mgt->db);
         free(mgt);
     }
 

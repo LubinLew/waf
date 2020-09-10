@@ -3,24 +3,26 @@
  * Copyright (c) LubinLew
  *
 */
+#include <stdio.h>
+#include <errno.h>
 
 
 #include <hs.h>
 #include <hs_header.h>
 
 
+
 struct _hs_mgt {
-    risk_level_t risk_level;
-    hs_database_t* db;
-    hs_scratch_t*  scratch;
-    match_event_handler cb;
-    db_mgt_t* mdb;
+    risk_level_t      risk_level;
+    /* hyperscan data */
+    hs_database_t*    hs_database;
+    hs_scratch_t*     hs_scratch;
+    /* all signature info */
+    db_mgt_t*         mdb;
+    /* whiltelist callback */
+    WHITELIST_CB      wcb;
+    /* match result */
     signature_info_t* match;
-};
-
-const static int g_compile_flags[256] = {
-
-
 };
 
 
@@ -56,14 +58,15 @@ _hs_flags_covert(const char* flag_str)
             flags |= HS_FLAG_PREFILTER;
             break;
         case 'l' :
-            flags |= HS_FLAG_SOM_LEFTMOST
+            flags |= HS_FLAG_SOM_LEFTMOST;
+            break;
         case 'c' :
             flags |= HS_FLAG_COMBINATION;
             break;
         case 'q' :
             flags |= HS_FLAG_QUIET;
             break;
-        default:
+        default: /* ignore wrong flags */
             fprintf(stderr, "Invalid flags [%c] !\n", *ch);
             break;
         }
@@ -75,16 +78,16 @@ _hs_flags_covert(const char* flag_str)
 
 
 int 
-hs_create_database(db_mgt_t* mdb, hs_mgt_t** pmgt)
+hs_wrapper_create(db_mgt_t* mdb, hs_mgt_t** pmgt)
 {
     int i, ret;
     int count = mdb->count;
     const char* pattern;
     unsigned int* ids;
     unsigned int* flags;
-    hs_error_t ret;
-
+    hs_error_t compile_err;
     hs_mgt_t* mgt;
+
     *pmgt = NULL;
     mgt = calloc(sizeof(hs_mgt_t), 1);
     if (!mgt) {
@@ -96,6 +99,10 @@ hs_create_database(db_mgt_t* mdb, hs_mgt_t** pmgt)
     pattern = calloc(sizeof(char*), count);
     ids     = calloc(sizeof(unsigned int), count);
     flags   = calloc(sizeof(unsigned int), count);
+    if (!pattern || !ids || !flags) {
+        fprintf(stderr, "ERROR: calloc() failed, ", strerror(errno));
+        return -1;
+   }
 
     for (i = 0; i < mdb->count; i++) {
         pattern[i] = mdb->bucket[i].pattern;
@@ -103,8 +110,13 @@ hs_create_database(db_mgt_t* mdb, hs_mgt_t** pmgt)
         flags[i]   = _hs_flags_covert(mdb->bucket[i].flags);
     }
 
+    /* multiple regular expression compiler with extended parameter support */
     ret = hs_compile_ext_multi(pattern, flags, ids, NULL, count, 
-                        HS_MODE_BLOCK, NULL, &mgt->db, &compile_err);
+                        HS_MODE_BLOCK, NULL, &mgt->hs_database, &compile_err);
+    free(pattern);
+    free(ids);
+    free(flags);
+
     if (ret) {
         fprintf(stderr, "ERROR: Unable to compile pattern: %s\n", compile_err->message);
         hs_free_compile_error(compile_err);
@@ -112,9 +124,10 @@ hs_create_database(db_mgt_t* mdb, hs_mgt_t** pmgt)
         return -1;
     }
 
-    if (hs_alloc_scratch(mgt->db, &mgt->scratch) != HS_SUCCESS) {
+    ret = hs_alloc_scratch(mgt->hs_database, &mgt->hs_scratch);
+    if (ret != HS_SUCCESS) {
         fprintf(stderr, "ERROR: Unable to allocate scratch space. Exiting.\n");
-        hs_free_database(mgt->db);
+        hs_free_database(mgt->hs_database);
         free(mgt);
         return -1;
     }
@@ -149,42 +162,52 @@ _hs_match_event_handler(unsigned int id, unsigned long long from,
 
 
 signature_info_t* 
-hs_scan_database(hs_mgt_t* mgt, unsigned char* data, size_t length)
+hs_wrapper_scan(hs_mgt_t* mgt, unsigned char* data, size_t length)
 {
-    int ret;
-    ret = hs_scan(mgt->db, (const char *)data, (unsigned int)length, 0,
-                  mgt->scratch, _hs_match_event_handler, (void*)mgt);
-    if (HS_SCAN_TERMINATED == ret) {
+    int ret = HS_SUCCESS;
+ 
+    ret = hs_scan(mgt->hs_database, (const char *)data, (unsigned int)length, 0,
+                  mgt->hs_scratch, _hs_match_event_handler, (void*)mgt);
+    if (HS_SCAN_TERMINATED == ret) {/* got match */
         return mgt->match;
     }
 
+    /* Mismatch */
     return NULL;
 }
 
 
 int
-hs_set_scan_level(hs_mgt_t* mgt, risk_level_t level)
+hs_wrapper_level(hs_mgt_t* mgt, risk_level_t level)
 {
     mgt->risk_level = level;
     return 0;
 }
 
+int
+hs_wrapper_whitelist(hs_mgt_t* mgt, WHITELIST_CB cb)
+{
+    mgt->wcb = cb;
+    return 0;
+}
+
 
 int 
-hs_destroy_database(hs_mgt_t* mgt)
+hs_wrapper_destroy(hs_mgt_t* mgt)
 {
     if (mgt) {
-        if (mgt->scratch) {
-            hs_free_scratch(mgt->scratch);
+        if (mgt->hs_scratch) {
+            hs_free_scratch(mgt->hs_scratch);
         }
 
-        if (mgt->db) {
-            hs_free_database(mgt->db);
+        if (mgt->hs_database) {
+            hs_free_database(mgt->hs_database);
         }
 
         free(mgt);
     }
 
+    return 0;
 }
 
 

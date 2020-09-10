@@ -17,19 +17,24 @@ typedef struct _hs_mgt hs_mgt_t;
 
 
 int
-hs_create_database(db_mgt_t* mdb, hs_mgt_t** pmgt);
+hs_wrapper_create(db_mgt_t* mdb, hs_mgt_t** pmgt);
 
 
 int 
-hs_destroy_database(hs_mgt_t* mgt);
+hs_wrapper_destroy(hs_mgt_t* mgt);
 
 
 signature_info_t* 
-hs_scan_database(hs_mgt_t* mgt, unsigned char* data, size_t length);
+hs_wrapper_scan(hs_mgt_t* mgt, unsigned char* data, size_t length);
 
 
 int
-hs_set_scan_level(hs_mgt_t* mgt, risk_level_t level);
+hs_wrapper_level(hs_mgt_t* mgt, risk_level_t level);
+
+
+int
+hs_wrapper_whitelist(hs_mgt_t* mgt, WHITELIST_CB cb);
+
 
 /*-----------------------------------------------------------------------------------*/
 #ifdef __cplusplus
