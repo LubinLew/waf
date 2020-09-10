@@ -16,7 +16,7 @@ INCS =   `pkg-config --cflags json-c libhs` \
          -Isrc/transform/inc
 #############################################################
 
-SOURCES = src/engine.c                              \
+SOURCES = src/engine.c                                  \
           src/database/src/db_loader.c                  \
           src/hyperscan/src/hs_wrapper.c                \
           src/transform/src/tf_common.c                 \
@@ -48,8 +48,8 @@ clean:
 	@ rm -rf ${OUTDIR}
 	@ echo "ALL Clear !!!"
 
-test:
-	@ echo "${OBJS}"
+test:test/test.c
+	@ ${CC} ${CFLAGS} ${INCS} $< -o $@ -Ltarget -lwafse
 
 #############################################################
 ${OUTDIR}/%.o:%.c
