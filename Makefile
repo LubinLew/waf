@@ -8,7 +8,7 @@ CC = gcc
 CFLAGS = -Wall -Werror -MD -fPIC -O2 -c
 
 ## need link json-c and hyperscan
-LFLAGS = `pkg-config --libs   json-c libhs`
+LFLAGS = -Bstatic `pkg-config --libs json-c libhs`
 INCS =   `pkg-config --cflags json-c libhs` \
 		 -Iinc	                            \
 		 -Isrc/database/inc                 \
@@ -49,11 +49,12 @@ clean:
 	@ echo "ALL Clear !!!"
 
 test:test/test.c
-	@ ${CC} ${CFLAGS} ${INCS} $< -o $@ -Ltarget -lwafse
+	${CC} ${CFLAGS} ${INCS} $< 
+	@ ${CC}	-o ${OUTDIR}/$@ test.o -L${OUTDIR} -l:${LIBNAME}.a  ${LFLAGS}
 
 #############################################################
 ${OUTDIR}/%.o:%.c
 	@ mkdir -p $(@D)
 	@ echo "[CC] $^"
-	@ ${CC} ${CFLAGS} ${INCS} $< -o $@ ${LFLAGS}
+	${CC} ${CFLAGS} ${INCS} $< -o $@ ${LFLAGS}
 

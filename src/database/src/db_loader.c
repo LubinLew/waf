@@ -48,7 +48,7 @@ _db_string_storage(db_mgt_t* mgt, struct json_object* jo_str)
 
 
 int 
-db_signature_open(const char* path, db_mgt_t** pmgt) 
+signature_database_open(const char* path, db_mgt_t** pmgt) 
 {
     int     i;
     int32_t count;
