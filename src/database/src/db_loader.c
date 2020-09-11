@@ -17,8 +17,8 @@
 static db_mgt_t* 
 _db_infos_alloc(int count, size_t file_size)
 {
-    size_t bucket = sizeof(signature_info_t) * (count + 1);
-    db_mgt_t* mgt = malloc(file_size + bucket);
+    size_t bucket_size = sizeof(signature_info_t) * (count + 1);
+    db_mgt_t* mgt = malloc(file_size + bucket_size);
     if (!mgt) {
         fprintf(stderr, "malloc failed, %s\n", strerror(errno));
         return NULL;
@@ -26,7 +26,7 @@ _db_infos_alloc(int count, size_t file_size)
 
     mgt->count = count;
     mgt->bucket = (signature_info_t*)mgt->memory;
-    mgt->mem_pos = mgt->memory + bucket;
+    mgt->mem_pos = mgt->memory + bucket_size;
 
     return mgt;
 }
