@@ -74,16 +74,19 @@ Rules have 4 Level:
 
 Rules have  many categroies:
 
-| category         | Description                | Remark                                               |
-| ---------------- | -------------------------- | ---------------------------------------------------- |
-| `SQL Injection`  |                            |                                                      |
-| `Code Injection` |                            |                                                      |
-| `CMD Injection`  |                            |                                                      |
-| `XSS`            | Cross-site scripting       | [XSS](https://owasp.org/www-community/attacks/xss/)  |
-| `CSRF`           | Cross Site Request Forgery | [LINK](https://owasp.org/www-community/attacks/csrf) |
-| `RFI`            | Remote file inclusion      |                                                      |
-| `LFI`            | Local file inclusion       |                                                      |
-|                  |                            |                                                      |
+| category    | sub-category        | Description                | Remark                                               |
+| ----------- | ------------------- | -------------------------- | ---------------------------------------------------- |
+| `Injection` | `SQL Injection`     |                            |                                                      |
+|             | `Code Injection`    |                            |                                                      |
+|             | `CMD Injection`     |                            |                                                      |
+|             | `XPath Injection`   |                            |                                                      |
+|             | `CSV Injection`     |                            |                                                      |
+|             | `Comment Injection` |                            |                                                      |
+| `XSS`       |                     | Cross-site scripting       | [XSS](https://owasp.org/www-community/attacks/xss/)  |
+| `CSRF`      |                     | Cross Site Request Forgery | [LINK](https://owasp.org/www-community/attacks/csrf) |
+| `RFI`       |                     | Remote file inclusion      |                                                      |
+| `LFI`       |                     | Local file inclusion       |                                                      |
+|             |                     |                            |                                                      |
 
 [Attacks on Software Application Security | OWASP Foundation](https://owasp.org/www-community/attacks/)
 
