@@ -1,38 +1,32 @@
 {
-  "version": 100,
-  "signs": [
+  "version": "0.0.1",
+  "rules": [
     {
       "id": 1001,
+      "cve-id": "CVE-2020-1001",
       "pattern": "AAAAAAAAAAAAAA",
-      "flags": 0,
-      "cve-id": "CVE-2019-1001",
-      "cnnvd-id": "CNNVD-202008-101",
-      "category": "SQL注入",
-      "level": 1,
-      "server": "Apache",
-      "desc": "详细的描述信息"
+      "flags": "i",
+      "level": "high",
+      "category": "SQL Injection",
+      "description": "Descriptive information"
     },
     {
       "id": 1002,
-      "pattern": "BBBBBBBBBBBBBB",
-      "flags": 0,
-      "cve-id": "CVE-2019-1002",
-      "cnnvd-id": "CNNVD-202008-102",
-      "category": "SQL注入",
-      "level": 1,
-      "server": "Apache",
-      "desc": "详细的描述信息"
+      "cve-id": "CVE-2020-1002",
+      "pattern": "AAAAAAAAAAAAAA",
+      "flags": "up",
+      "level": "medium",
+      "category": "XSS",
+      "description": "Descriptive information"
     },
     {
       "id": 1003,
-      "pattern": "CCCCCCCCCCCCCC",
-      "flags": 0,
-      "cve-id": "CVE-2019-1003",
-      "cnnvd-id": "CNNVD-202008-102",
-      "category": "SQL注入",
-      "level": 1,
-      "server": "Apache",
-      "desc": "详细的描述信息"
+      "cve-id": "CVE-2020-1003",
+      "pattern": "AAAAAAAAAAAAAA",
+      "flags": "im",
+      "level": "low",
+      "category": "CSRF",
+      "description": "Descriptive information"
     }
   ]
 }
