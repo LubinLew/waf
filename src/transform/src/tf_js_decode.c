@@ -15,11 +15,12 @@
  *> a four-digit escape sequence of the form %uxxxx is used.
  *
  * !!! We Just Decode ASCII
- * javascript could encode ascii to 4 format:
+ * javascript could encode ascii to 5 format:
  *    1) %HH
  *  2) \xHH
  *  3) %u00HH
  *  4) \u00HH
+ *  5) \u{0?31} , \u{31} or \u{0000031} TODO
 */
 
 static inline void 
