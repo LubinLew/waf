@@ -24,6 +24,9 @@ uint8_t*
 ts_compress_space(uint8_t *data, size_t *len);
 
 
+uint8_t* 
+tf_remove_comment(uint8_t* data, size_t* len);
+
 
 uint8_t* 
 tf_url_decode(uint8_t *data, size_t *len);
