@@ -21,6 +21,7 @@ SOURCES = src/engine.c                                  \
           src/hyperscan/src/hs_wrapper.c                \
           src/transform/src/tf_common.c                 \
           src/transform/src/tf_spaces.c                 \
+          src/transform/src/tf_comments.c               \
           src/transform/src/tf_url_decode.c             \
           src/transform/src/tf_html_entities_decode.c   \
           src/transform/src/tf_base64_decode.c          \
@@ -56,5 +57,5 @@ test:test/test.c
 ${OUTDIR}/%.o:%.c
 	@ mkdir -p $(@D)
 	@ echo "[CC] $^"
-	${CC} ${CFLAGS} ${INCS} $< -o $@ ${LFLAGS}
+	@ ${CC} ${CFLAGS} ${INCS} $< -o $@ ${LFLAGS}
 
