@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 
 import os
@@ -26,7 +26,7 @@ FILE_LIST = {
 }
 
 #
-# rule_id, phase, severity, match_method, signature, msg, match_field
+# rule_id, phase, severity, match_field, signature, msg, 
 # 
 def parse_rules(worksheet, item):
     filename = OUT_PATH + item + ".conf"
