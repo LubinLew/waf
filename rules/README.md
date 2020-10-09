@@ -86,16 +86,12 @@ Rules have  many categroies:
 | `CSRF`      |                     | Cross Site Request Forgery | [LINK](https://owasp.org/www-community/attacks/csrf) |
 | `RFI`       |                     | Remote file inclusion      |                                                      |
 | `LFI`       |                     | Local file inclusion       |                                                      |
-|             |                     |                            |                                                      |
+| `RDF`       |                     | Reflected File Download    |                                                      |
 
 [Attacks on Software Application Security | OWASP Foundation](https://owasp.org/www-community/attacks/)
-
-
 
 ## Other Rules
 
 [NAXSI:Nginx Anti XSS & SQL Injection](https://github.com/nbs-system/naxsi)
 
 [OWASP ModSecurity Core Rule Set](https://github.com/coreruleset/coreruleset)
-
-
