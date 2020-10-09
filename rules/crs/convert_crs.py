@@ -4,8 +4,8 @@
 import os
 import re
 import sys
-import git
-import xlwt
+import git     ## pip install gitpython
+import xlwt    ## pip install xlwt
 import getopt
 
 ### CRR Project
@@ -31,7 +31,7 @@ FILE_LIST = {
 def parse_rules(worksheet, item):
     filename = OUT_PATH + item + ".conf"
     Row = 0
-    with open(filename) as in_f:
+    with open(filename, encoding="utf-8", mode="r") as in_f:
         for line in in_f:
             Row = Row + 1
             print("===[%s]->line[%d]" % (item, Row))
