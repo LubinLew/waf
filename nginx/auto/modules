@@ -607,7 +607,7 @@ if [ $HTTP = YES ]; then
         . auto/module
     fi
 
-    if [ $HTTP_SSL = YES ]; then
+    if [ YES = YES ]; then
         USE_OPENSSL=YES
         have=NGX_HTTP_SSL . auto/have
 
