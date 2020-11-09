@@ -58,6 +58,27 @@ ngx_module_t  ngx_hyperscan_module = {
 static ngx_pool_t  *ngx_hyperscan_pool;
 
 
+static void * ngx_libc_cdecl
+ngx_hyperscan_malloc(size_t size)
+{
+    ngx_pool_t      *pool;
+    pool = ngx_hyperscan_pool;
+
+    if (pool) {
+        return ngx_palloc(pool, size);
+    }
+
+    return NULL;
+}
+
+
+static void ngx_libc_cdecl
+ngx_hyperscan_free(void *p)
+{
+    return;
+}
+
+
 
 ngx_hyperscan_t *
 ngx_hyperscan_create(ngx_hs_mode_e mode, ngx_hs_type_e type)
@@ -147,9 +168,15 @@ ngx_hyperscan_compile(ngx_hyperscan_t *hs, const u_char *path, ngx_database_proc
 
         }
     }
-   
 
+    /* Allocate a "scratch" space for use by Hyperscan. */
+    ret = hs_alloc_scratch(hs->database, &hs->scratch);
+    if (ret != HS_SUCCESS) {
 
+    }
+
+    return NGX_OK;
+    
 }
 
 
@@ -158,6 +185,20 @@ ngx_hyperscan_compile(ngx_hyperscan_t *hs, const u_char *path, ngx_database_proc
 ngx_int_t
 ngx_hyperscan_scan(ngx_hyperscan_t *hs, ngx_str_t *str)
 {
+    hs_error_t  err;
+ 
+    switch (hs->mode){
+    case NGX_HS_MODE_BLOCK:
+        err = 
+        break;
+    case NGX_HS_MODE_STREAM:
+        break;
+    case NGX_HS_MODE_VECTORED:
+        break;
+    default:
+        break;
+        }
+
 }
 
 
@@ -242,25 +283,6 @@ ngx_hyperscan_free(void *p)
 }
 
 
-static ngx_int_t
-ngx_hyperscan_module_init(ngx_cycle_t *cycle)
-{
-    int               opt;
-    const char       *errstr;
-    ngx_uint_t        i;
-    ngx_list_part_t  *part;
-    ngx_hyperscan_elt_t  *elts;
-
-    opt = 0;
-
-    ngx_hyperscan_pool = ngx_create_pool(sizeof(ngx_hyperscan_t) * 5, cycle->log);
-    if (ngx_hyperscan_pool == NULL) {
-        return NGX_ERROR;
-    }
-
-    return NGX_OK;
-}
-
 
 static void *
 ngx_hyperscan_create_conf(ngx_cycle_t *cycle)
@@ -287,5 +309,19 @@ ngx_hyperscan_init_conf(ngx_cycle_t *cycle, void *conf)
 
     return NGX_CONF_OK;
 }
+
+
+static ngx_int_t
+ngx_hyperscan_module_init(ngx_cycle_t *cycle)
+{
+    ngx_hyperscan_pool = ngx_create_pool(10 * 1024 * 1024, cycle->log);
+    if (ngx_hyperscan_pool == NULL) {
+        return NGX_ERROR;
+    }
+
+    /* alwayls return HS_SUCCESS */
+    hs_set_allocator(ngx_hyperscan_malloc, ngx_hyperscan_free);
+}
+
 
 
