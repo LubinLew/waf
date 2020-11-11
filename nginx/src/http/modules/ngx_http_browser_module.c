@@ -6,6 +6,20 @@
  * http://nginx.org/en/docs/http/ngx_http_browser_module.html
  *
  * 该模块用于创建基于请求头中"User-Agent"字段的变量,这些变量主要用于识别浏览器
+ * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+ * Chrome UA  : https://developer.chrome.com/multidevice/user-agent
+ * Firefox UA : https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
+ 
+ * Firefox : Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0
+ * Chrome  : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36
+ * Safari  : Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1
+ * IE Edge : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586
+ * IE 11   : Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko
+ * IE 10   : Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Win64; x64; Trident/6.0)",
+ * IE 09   : Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
+ * IE 08   : Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)",
+ * IE 07   : Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
+ * IE 06   :
  */
 
 

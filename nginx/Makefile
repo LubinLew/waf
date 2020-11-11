@@ -6,6 +6,7 @@ OUTDIR = objs
 CC = cc
 CFLAGS = -c -pipe -O -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g 
 LFLAGS = -ldl -pthread
+DFLAGS = 
 
 #############################################################
 
@@ -15,7 +16,6 @@ INCS =                     \
     -I src/event           \
     -I src/event/modules   \
     -I src/os/unix         \
-    -I objs                \
     -I src/http            \
     -I src/http/modules    \
     -I src/http/v2
@@ -28,6 +28,7 @@ include auto/openssl.mk
 #include auto/libmaxminddb.mk
 #############################################################
 
+# core part
 SOURCES +=                         \
     src/core/ngx_log.c             \
     src/core/ngx_palloc.c          \
@@ -66,6 +67,7 @@ SOURCES +=                         \
     src/core/ngx_regex.c           \
     src/core/nginx.c
 
+# event part
 SOURCES +=                                  \
     src/event/ngx_event_timer.c             \
     src/event/ngx_event_posted.c            \
@@ -78,6 +80,7 @@ SOURCES +=                                  \
     src/event/ngx_event_openssl_stapling.c  \
     src/event/modules/ngx_epoll_module.c
 
+# os part
 SOURCES +=                                  \
     src/os/unix/ngx_time.c                  \
     src/os/unix/ngx_errno.c                 \
@@ -104,61 +107,70 @@ SOURCES +=                                  \
     src/os/unix/ngx_process.c               \
     src/os/unix/ngx_daemon.c
 
-SOURCES += \
-    src/http/ngx_http.c \
-    src/http/ngx_http_core_module.c \
-    src/http/ngx_http_special_response.c \
-    src/http/ngx_http_request.c \
-    src/http/ngx_http_parse.c \
-    src/http/ngx_http_request_body.c \
-    src/http/ngx_http_variables.c \
-    src/http/ngx_http_script.c \
-    src/http/ngx_http_upstream.c \
-    src/http/ngx_http_upstream_round_robin.c \
-    src/http/ngx_http_file_cache.c \
-    src/http/ngx_http_write_filter_module.c \
-    src/http/ngx_http_header_filter_module.c \
-    src/http/ngx_http_postpone_filter_module.c \
-    src/http/ngx_http_copy_filter_module.c \
-    src/http/v2/ngx_http_v2_filter_module.c \
-    src/http/v2/ngx_http_v2.c \
-    src/http/v2/ngx_http_v2_table.c \
-    src/http/v2/ngx_http_v2_encode.c \
-    src/http/v2/ngx_http_v2_huff_decode.c \
-    src/http/v2/ngx_http_v2_huff_encode.c \
-    src/http/v2/ngx_http_v2_module.c \
-    src/http/modules/ngx_http_log_module.c \
-    src/http/modules/ngx_http_chunked_filter_module.c \
-    src/http/modules/ngx_http_range_filter_module.c \
-    src/http/modules/ngx_http_gzip_filter_module.c \
-    src/http/modules/ngx_http_ssi_filter_module.c \
-    src/http/modules/ngx_http_charset_filter_module.c \
-    src/http/modules/ngx_http_userid_filter_module.c \
-    src/http/modules/ngx_http_headers_filter_module.c \
+# http part
+SOURCES +=                                                 \
+    src/http/ngx_http.c                                    \
+    src/http/ngx_http_core_module.c                        \
+    src/http/ngx_http_special_response.c                   \
+    src/http/ngx_http_request.c                            \
+    src/http/ngx_http_parse.c                              \
+    src/http/ngx_http_request_body.c                       \
+    src/http/ngx_http_variables.c                          \
+    src/http/ngx_http_script.c                             \
+    src/http/ngx_http_file_cache.c                         \
+    src/http/ngx_http_write_filter_module.c                \
+    src/http/ngx_http_header_filter_module.c               \
+    src/http/ngx_http_postpone_filter_module.c             \
+    src/http/ngx_http_copy_filter_module.c                 \
+    src/http/modules/ngx_http_log_module.c                 \
+    src/http/modules/ngx_http_chunked_filter_module.c      \
+    src/http/modules/ngx_http_range_filter_module.c        \
+    src/http/modules/ngx_http_gzip_filter_module.c         \
+    src/http/modules/ngx_http_ssi_filter_module.c          \
+    src/http/modules/ngx_http_charset_filter_module.c      \
+    src/http/modules/ngx_http_userid_filter_module.c       \
+    src/http/modules/ngx_http_headers_filter_module.c      \
     src/http/modules/ngx_http_not_modified_filter_module.c \
-    src/http/modules/ngx_http_static_module.c \
-    src/http/modules/ngx_http_index_module.c \
-    src/http/modules/ngx_http_mirror_module.c \
-    src/http/modules/ngx_http_try_files_module.c \
-    src/http/modules/ngx_http_access_module.c \
-    src/http/modules/ngx_http_limit_conn_module.c \
-    src/http/modules/ngx_http_limit_req_module.c \
-    src/http/modules/ngx_http_realip_module.c \
-    src/http/modules/ngx_http_map_module.c \
-    src/http/modules/ngx_http_split_clients_module.c \
-    src/http/modules/ngx_http_referer_module.c \
-    src/http/modules/ngx_http_rewrite_module.c \
-    src/http/modules/ngx_http_ssl_module.c \
-    src/http/modules/ngx_http_proxy_module.c \
-    src/http/modules/ngx_http_browser_module.c \
-    src/http/modules/ngx_http_upstream_hash_module.c \
-    src/http/modules/ngx_http_upstream_ip_hash_module.c \
-    src/http/modules/ngx_http_upstream_least_conn_module.c \
-    src/http/modules/ngx_http_upstream_random_module.c \
-    src/http/modules/ngx_http_upstream_keepalive_module.c \
-    src/http/modules/ngx_http_upstream_zone_module.c \
-    src/ngx_modules.c
+    src/http/modules/ngx_http_static_module.c              \
+    src/http/modules/ngx_http_index_module.c               \
+    src/http/modules/ngx_http_mirror_module.c              \
+    src/http/modules/ngx_http_try_files_module.c           \
+    src/http/modules/ngx_http_access_module.c              \
+    src/http/modules/ngx_http_limit_conn_module.c          \
+    src/http/modules/ngx_http_limit_req_module.c           \
+    src/http/modules/ngx_http_realip_module.c              \
+    src/http/modules/ngx_http_map_module.c                 \
+    src/http/modules/ngx_http_split_clients_module.c       \
+    src/http/modules/ngx_http_referer_module.c             \
+    src/http/modules/ngx_http_rewrite_module.c             \
+    src/http/modules/ngx_http_ssl_module.c                 \
+    src/http/modules/ngx_http_browser_module.c
 
+# http2 part
+SOURCES +=                                  \
+    src/http/v2/ngx_http_v2.c               \
+    src/http/v2/ngx_http_v2_table.c         \
+    src/http/v2/ngx_http_v2_encode.c        \
+    src/http/v2/ngx_http_v2_module.c        \
+    src/http/v2/ngx_http_v2_huff_decode.c   \
+    src/http/v2/ngx_http_v2_huff_encode.c   \
+    src/http/v2/ngx_http_v2_filter_module.c
+
+
+
+# reverse-proxy part
+SOURCES +=                                                  \
+    src/http/modules/ngx_http_proxy_module.c                \
+    src/http/ngx_http_upstream.c                            \
+    src/http/ngx_http_upstream_round_robin.c                \
+    src/http/modules/ngx_http_upstream_zone_module.c        \
+    src/http/modules/ngx_http_upstream_hash_module.c        \
+    src/http/modules/ngx_http_upstream_random_module.c      \
+    src/http/modules/ngx_http_upstream_ip_hash_module.c     \
+    src/http/modules/ngx_http_upstream_least_conn_module.c  \
+    src/http/modules/ngx_http_upstream_keepalive_module.c
+
+SOURCES += src/ngx_modules.c
 
 OBJS=$(SOURCES:%.c=${OUTDIR}/%.o)
 #############################################################
@@ -181,4 +193,5 @@ clean:
 ${OUTDIR}/%.o:%.c
 	@ mkdir -p $(@D)
 	@ echo "[CC]   $^"
-	@ ${CC} ${CFLAGS} ${INCS} $< -o $@
+	@ ${CC} ${CFLAGS} ${DFLAGS} ${INCS} $< -o $@
+
