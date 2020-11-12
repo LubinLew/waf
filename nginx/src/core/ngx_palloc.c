@@ -15,6 +15,9 @@ static void *ngx_palloc_block(ngx_pool_t *pool, size_t size);
 static void *ngx_palloc_large(ngx_pool_t *pool, size_t size);
 
 
+/**
+ * 创建一个内存池
+ */
 ngx_pool_t *
 ngx_create_pool(size_t size, ngx_log_t *log)
 {
@@ -25,6 +28,12 @@ ngx_create_pool(size_t size, ngx_log_t *log)
         return NULL;
     }
 
+	/**
+	 * Nginx会分配一块大内存，其中内存头部存放ngx_pool_t本身内存池的数据结构
+	 * ngx_pool_data_t	p->d 存放内存池的数据部分（适合小于p->max的内存块存储）
+	 * p->large 存放大内存块列表
+	 * p->cleanup 存放可以被回调函数清理的内存块（该内存块不一定会在内存池上面分配）
+	 */
     p->d.last = (u_char *) p + sizeof(ngx_pool_t);
     p->d.end = (u_char *) p + size;
     p->d.next = NULL;
@@ -33,6 +42,7 @@ ngx_create_pool(size_t size, ngx_log_t *log)
     size = size - sizeof(ngx_pool_t);
     p->max = (size < NGX_MAX_ALLOC_FROM_POOL) ? size : NGX_MAX_ALLOC_FROM_POOL;
 
+	/* 只有缓存池的父节点，才会用到下面的这些  ，子节点只挂载在p->d.next,并且只负责p->d的数据内容 */
     p->current = p;
     p->chain = NULL;
     p->large = NULL;
@@ -42,7 +52,9 @@ ngx_create_pool(size_t size, ngx_log_t *log)
     return p;
 }
 
-
+/**
+ * 销毁内存池。
+ */
 void
 ngx_destroy_pool(ngx_pool_t *pool)
 {
@@ -50,6 +62,7 @@ ngx_destroy_pool(ngx_pool_t *pool)
     ngx_pool_large_t    *l;
     ngx_pool_cleanup_t  *c;
 
+	/* 首先清理 pool->cleanup 链表 */
     for (c = pool->cleanup; c; c = c->next) {
         if (c->handler) {
             ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, pool->log, 0,
@@ -78,14 +91,16 @@ ngx_destroy_pool(ngx_pool_t *pool)
         }
     }
 
-#endif
+#endif /* NGX_DEBUG */
 
+    /* 清理pool->large链表（pool->large为单独的大数据内存块）*/
     for (l = pool->large; l; l = l->next) {
         if (l->alloc) {
             ngx_free(l->alloc);
         }
     }
 
+	/* 对内存池的data数据区域进行释放 */
     for (p = pool, n = pool->d.next; /* void */; p = n, n = n->d.next) {
         ngx_free(p);
 
@@ -96,18 +111,23 @@ ngx_destroy_pool(ngx_pool_t *pool)
 }
 
 
+/**
+ * 重设内存池
+ */
 void
 ngx_reset_pool(ngx_pool_t *pool)
 {
     ngx_pool_t        *p;
     ngx_pool_large_t  *l;
 
+	/* 清理pool->large链表（pool->large为单独的大数据内存块）  */
     for (l = pool->large; l; l = l->next) {
         if (l->alloc) {
             ngx_free(l->alloc);
         }
     }
 
+	/* 循环重新设置内存池data区域的 p->d.last；data区域数据并不擦除*/
     for (p = pool; p; p = p->d.next) {
         p->d.last = (u_char *) p + sizeof(ngx_pool_t);
         p->d.failed = 0;
@@ -118,8 +138,8 @@ ngx_reset_pool(ngx_pool_t *pool)
     pool->large = NULL;
 }
 
-/* 从pool中申请内存
- * 
+/** 
+ * 从内存池中申请内存
 */
 void *
 ngx_palloc(ngx_pool_t *pool, size_t size)

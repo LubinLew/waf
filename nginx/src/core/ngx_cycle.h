@@ -38,9 +38,9 @@ struct ngx_shm_zone_s {
 
 struct ngx_cycle_s {
     void                  ****conf_ctx; /* 配置存储结构,存储的是各个模块的配置文件结构的指针地址 */
-    ngx_pool_t               *pool; /* 内存池地址 */
+    ngx_pool_t               *pool;     /* 内存池地址 */
 
-    ngx_log_t                *log; /* 日志 */
+    ngx_log_t                *log;      /* 日志 */
     ngx_log_t                 new_log;
 
     ngx_uint_t                log_use_stderr;  /* unsigned  log_use_stderr:1; */

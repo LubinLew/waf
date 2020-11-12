@@ -851,7 +851,14 @@ ngx_http_handler(ngx_http_request_t *r)
     ngx_http_core_run_phases(r);
 }
 
-
+/**
+ * NGX_OK:    表示该阶段已经处理完成，需要转入下一个阶段；
+ * NGX_DECLINED:    表示需要转入本阶段的下一个handler继续处理；
+ * NGX_AGAIN, 
+ * NGX_DONE:表示需要等待某个事件发生才能继续处理（比如等待网络IO），此时Nginx为了不阻塞其他请求的处理，必须中断当前请求的执行链，等待事件发生之后继续执行该handler；
+ * NGX_ERROR:    表示发生了错误，需要结束该请求。
+ 
+ */
 void
 ngx_http_core_run_phases(ngx_http_request_t *r)
 {
@@ -889,16 +896,19 @@ ngx_http_core_generic_phase(ngx_http_request_t *r, ngx_http_phase_handler_t *ph)
 
     rc = ph->handler(r);
 
+    /* 如果hanlder方法返回NGX_OK，将进入下一阶段处理 */
     if (rc == NGX_OK) {
         r->phase_handler = ph->next;
         return NGX_AGAIN;
     }
 
+    /* 如果handler方法返回NGX_DECLINED,那么将进入下一个处理方法，这个处理方法即可以属于当前阶段，也可能属于下一阶段 */
     if (rc == NGX_DECLINED) {
         r->phase_handler++;
         return NGX_AGAIN;
     }
 
+    /* 如果handler方法返回NGX_AGAIN或者NGX_DONE，那么当前请求将依然停留在这一处理阶段 */
     if (rc == NGX_AGAIN || rc == NGX_DONE) {
         return NGX_OK;
     }
