@@ -851,7 +851,7 @@ ngx_http_handler(ngx_http_request_t *r)
     ngx_http_core_run_phases(r);
 }
 
-/**
+/** HTTP 11个 阶段处理
  * NGX_OK:    表示该阶段已经处理完成，需要转入下一个阶段；
  * NGX_DECLINED:    表示需要转入本阶段的下一个handler继续处理；
  * NGX_AGAIN, 
@@ -870,6 +870,7 @@ ngx_http_core_run_phases(ngx_http_request_t *r)
 
     ph = cmcf->phase_engine.handlers;
 
+    /* 遍历解析和处理各个阶段的HTTP请求 如果返回rc==NGX_AGAIN 则交由下一个阶段处理；返回NGX_OK则返回           */
     while (ph[r->phase_handler].checker) {
 
         rc = ph[r->phase_handler].checker(r, &ph[r->phase_handler]);

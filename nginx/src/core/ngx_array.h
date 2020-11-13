@@ -14,7 +14,6 @@
 
 #include <ngx_config.h>
 #include <ngx_core.h>
-#include <ngx_palloc.h>
 
 
 typedef struct {
@@ -52,6 +51,9 @@ ngx_array_init(ngx_array_t *array, ngx_pool_t *pool, ngx_uint_t n, size_t size)
 
     return NGX_OK;
 }
+
+
+#define ngx_array_get(_arr, _index) ((u_char *)(_arr)->etls + (_arr)->size * (_index))
 
 
 #endif /* _NGX_ARRAY_H_INCLUDED_ */
