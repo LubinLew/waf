@@ -568,11 +568,9 @@ ngx_init_cycle(ngx_cycle_t *old_cycle)
                     }
 #endif
 
-#if (NGX_HAVE_REUSEPORT)
                     if (nls[n].reuseport && !ls[i].reuseport) {
                         nls[n].add_reuseport = 1;
                     }
-#endif
 
                     break;
                 }

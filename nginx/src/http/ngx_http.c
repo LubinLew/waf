@@ -120,7 +120,7 @@ static char *
 ngx_http_block(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     char                        *rv;
-    ngx_uint_t                   mi, m, s;
+    ngx_uint_t                   mi, m, s; /* mi : module index */
     ngx_conf_t                   pcf;
     ngx_http_module_t           *module;
     ngx_http_conf_ctx_t         *ctx;
@@ -1766,9 +1766,7 @@ ngx_http_add_listening(ngx_conf_t *cf, ngx_http_conf_addr_t *addr)
     ls->fastopen = addr->opt.fastopen;
 #endif
 
-#if (NGX_HAVE_REUSEPORT)
     ls->reuseport = addr->opt.reuseport;
-#endif
 
     return ls;
 }

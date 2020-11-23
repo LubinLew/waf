@@ -128,11 +128,6 @@
 #endif
 
 
-#ifndef NGX_HAVE_REUSEPORT
-#define NGX_HAVE_REUSEPORT  1
-#endif
-
-
 #ifndef NGX_HAVE_TRANSPARENT_PROXY
 #define NGX_HAVE_TRANSPARENT_PROXY  1
 #endif

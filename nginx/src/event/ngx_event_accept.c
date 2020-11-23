@@ -394,7 +394,6 @@ ngx_disable_accept_events(ngx_cycle_t *cycle, ngx_uint_t all)
             continue;
         }
 
-#if (NGX_HAVE_REUSEPORT)
 
         /*
          * do not disable accept on worker's own sockets
@@ -404,8 +403,6 @@ ngx_disable_accept_events(ngx_cycle_t *cycle, ngx_uint_t all)
         if (ls[i].reuseport && !all) {
             continue;
         }
-
-#endif
 
         if (ngx_del_event(c->read, NGX_READ_EVENT, NGX_DISABLE_EVENT)
             == NGX_ERROR)

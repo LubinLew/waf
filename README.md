@@ -12,6 +12,14 @@ early draft
 
 
 
+# Dependency
+
+| Software | Version | Remark |
+| -------- | ------- | ------ |
+| kernel   | >= 3.9  |        |
+|          |         |        |
+|          |         |        |
+
 # Other WAF
 
 [SpiderLabs/ModSecurity](https://github.com/SpiderLabs/ModSecurity)

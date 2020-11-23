@@ -84,8 +84,11 @@ struct ngx_command_s {
 	 * 2.参数的类型和个数 有 NGX_CONF_TAKE1 等选项,也可以自己自由组合
 	 */
     ngx_uint_t            type;
-    char               *(*set)(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
-    ngx_uint_t            conf;
+    char               *(*set)(ngx_conf_t *cf, ngx_command_t *cmd, void *conf); //处理配置项的回调方法。Nginx提供了14个预设的解析配置项的方法。
+    ngx_uint_t            conf; //对于HTTP模块，conf是必须设置的。取值范围为:NGX_HTTP_MAIN_CONF_OFFSET, NGX_HTTP_SRV_CONF_OFFSET, NGX_HTTP_LOC_CONF_OFFSET
+    /* 当前配置项在整个存储配置项的结构体中的偏移位置。对于使用Nginx预设的解析方法：
+     * Nginx首先通过conf成员找到应该用哪个结构体来存放，然后通过offset成员找到这个结构体中的相应成员，以便存放该配置。
+     */
     ngx_uint_t            offset;
     void                 *post;
 };

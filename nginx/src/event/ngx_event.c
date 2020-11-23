@@ -427,10 +427,8 @@ ngx_handle_write_event(ngx_event_t *wev, size_t lowat)
 static char *
 ngx_event_init_conf(ngx_cycle_t *cycle, void *conf)
 {
-#if (NGX_HAVE_REUSEPORT)
     ngx_uint_t        i;
     ngx_listening_t  *ls;
-#endif
 
     if (ngx_get_conf(cycle->conf_ctx, ngx_events_module) == NULL) {
         ngx_log_error(NGX_LOG_EMERG, cycle->log, 0,
@@ -453,7 +451,6 @@ ngx_event_init_conf(ngx_cycle_t *cycle, void *conf)
         return NGX_CONF_ERROR;
     }
 
-#if (NGX_HAVE_REUSEPORT)
 
     ls = cycle->listening.elts;
     for (i = 0; i < cycle->listening.nelts; i++) {
@@ -471,7 +468,6 @@ ngx_event_init_conf(ngx_cycle_t *cycle, void *conf)
         ls = cycle->listening.elts;
     }
 
-#endif
 
     return NGX_CONF_OK;
 }
@@ -801,11 +797,9 @@ ngx_event_process_init(ngx_cycle_t *cycle)
     ls = cycle->listening.elts;
     for (i = 0; i < cycle->listening.nelts; i++) {
 
-#if (NGX_HAVE_REUSEPORT)
         if (ls[i].reuseport && ls[i].worker != ngx_worker) {
             continue;
         }
-#endif
 
         c = ngx_get_connection(ls[i].fd, cycle->log);
 
@@ -889,8 +883,6 @@ ngx_event_process_init(ngx_cycle_t *cycle)
         rev->handler = (c->type == SOCK_STREAM) ? ngx_event_accept
                                                 : ngx_event_recvmsg;
 
-#if (NGX_HAVE_REUSEPORT)
-
         if (ls[i].reuseport) {
             if (ngx_add_event(rev, NGX_READ_EVENT, 0) == NGX_ERROR) {
                 return NGX_ERROR;
@@ -899,7 +891,6 @@ ngx_event_process_init(ngx_cycle_t *cycle)
             continue;
         }
 
-#endif
 
         if (ngx_use_accept_mutex) {
             continue;

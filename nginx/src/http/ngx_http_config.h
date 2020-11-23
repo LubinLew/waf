@@ -15,24 +15,24 @@
 
 
 typedef struct {
-    void        **main_conf;
-    void        **srv_conf;
-    void        **loc_conf;
+    void        **main_conf;  /* 指针数组，数组中的每个元素指向所有HTTP模块 create_main_conf 方法产生的结构体*/
+    void        **srv_conf;   /* 指针数组，数组中的每个元素指向所有HTTP模块 create_srv_conf 方法产生的结构体*/
+    void        **loc_conf;   /* 指针数组，数组中的每个元素指向所有HTTP模块 create_loc_conf 方法产生的结构体*/
 } ngx_http_conf_ctx_t;
 
 
 typedef struct {
-    ngx_int_t   (*preconfiguration)(ngx_conf_t *cf);
-    ngx_int_t   (*postconfiguration)(ngx_conf_t *cf);
+    ngx_int_t   (*preconfiguration)(ngx_conf_t *cf);  //解析配置文件前调用,通常用来创建nginx变量
+    ngx_int_t   (*postconfiguration)(ngx_conf_t *cf); //完成配置文件解析后调用, 通常做模块初始化
 
-    void       *(*create_main_conf)(ngx_conf_t *cf);
-    char       *(*init_main_conf)(ngx_conf_t *cf, void *conf);
+    void       *(*create_main_conf)(ngx_conf_t *cf); //当需要创建数据结构用户存储main级别的全局配置项时候调用
+    char       *(*init_main_conf)(ngx_conf_t *cf, void *conf); //初始化main级别配置项
 
-    void       *(*create_srv_conf)(ngx_conf_t *cf);
-    char       *(*merge_srv_conf)(ngx_conf_t *cf, void *prev, void *conf);
+    void       *(*create_srv_conf)(ngx_conf_t *cf);  //当需要创建数据结构用户存储srver级别的全局配置项时候调用
+    char       *(*merge_srv_conf)(ngx_conf_t *cf, void *prev, void *conf); //合并server级别的配置项
 
-    void       *(*create_loc_conf)(ngx_conf_t *cf);
-    char       *(*merge_loc_conf)(ngx_conf_t *cf, void *prev, void *conf);
+    void       *(*create_loc_conf)(ngx_conf_t *cf);  //当需要创建数据结构用户存储loc级别的全局配置项时候调用
+    char       *(*merge_loc_conf)(ngx_conf_t *cf, void *prev, void *conf);  //合并location级别的配置项
 } ngx_http_module_t;
 
 
