@@ -10,8 +10,6 @@ This project include 2 parts:
 
 early draft
 
-
-
 # Dependency
 
 | Software | Version | Remark |
