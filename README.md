@@ -14,7 +14,7 @@ early draft
 
 | Software | Version | Remark |
 | -------- | ------- | ------ |
-| kernel   | >= 3.9  |        |
+| kernel   | >= 3.9  |    SO_REUSEPORT    |
 |          |         |        |
 |          |         |        |
 
