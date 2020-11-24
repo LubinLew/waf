@@ -2,7 +2,7 @@
 #include <ngx_core.h>
 
 
-#include <ngx_array.h>
+#include <ngx_list.h>
 #include <ngx_log.h>
 
 
