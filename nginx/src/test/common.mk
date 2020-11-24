@@ -2,7 +2,7 @@ OUTDIR = objs
 
 TOPDIR = ../..
 
-CFLAGS += -c -pipe -O -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
+CFLAGS += -c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 LFLAGS = -ldl -pthread -lssl -lcrypto -lz -lpcre
 
 INCS += \
