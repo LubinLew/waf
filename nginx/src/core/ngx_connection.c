@@ -1258,34 +1258,28 @@ ngx_connection_local_sockaddr(ngx_connection_t *c, ngx_str_t *s,
     ngx_uint_t            addr;
     ngx_sockaddr_t        sa;
     struct sockaddr_in   *sin;
-#if (NGX_HAVE_INET6)
     ngx_uint_t            i;
     struct sockaddr_in6  *sin6;
-#endif
 
     addr = 0;
 
     if (c->local_socklen) {
         switch (c->local_sockaddr->sa_family) {
 
-#if (NGX_HAVE_INET6)
         case AF_INET6:
             sin6 = (struct sockaddr_in6 *) c->local_sockaddr;
-            /* 快速确认 IPv6 地址是否为空 */
+            /* 快速确认 IPv6 地址是否为空,  即   [::]:80 这种情况 */
             for (i = 0; addr == 0 && i < 16; i++) {
                 addr |= sin6->sin6_addr.s6_addr[i];
             }
 
             break;
-#endif
 
-#if (NGX_HAVE_UNIX_DOMAIN)
         case AF_UNIX:
             addr = 1;
             break;
-#endif
 
-        default: /* AF_INET */
+        default: /* AF_INET, 默认IPv4地址 */
             sin = (struct sockaddr_in *) c->local_sockaddr;
             addr = sin->sin_addr.s_addr;
             break;

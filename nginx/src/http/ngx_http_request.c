@@ -217,10 +217,8 @@ ngx_http_init_connection(ngx_connection_t *c)
     ngx_http_in_addr_t     *addr;
     ngx_http_log_ctx_t     *ctx;
     ngx_http_connection_t  *hc;
-#if (NGX_HAVE_INET6)
     struct sockaddr_in6    *sin6;
     ngx_http_in6_addr_t    *addr6;
-#endif
 
     /* 申请 http链接结构体内存 */
     hc = ngx_pcalloc(c->pool, sizeof(ngx_http_connection_t));
@@ -250,7 +248,6 @@ ngx_http_init_connection(ngx_connection_t *c)
 
         switch (c->local_sockaddr->sa_family) {
 
-#if (NGX_HAVE_INET6)
         case AF_INET6:
             sin6 = (struct sockaddr_in6 *) c->local_sockaddr;
 
@@ -267,7 +264,6 @@ ngx_http_init_connection(ngx_connection_t *c)
             hc->addr_conf = &addr6[i].conf;
 
             break;
-#endif
 
         default: /* AF_INET */
             sin = (struct sockaddr_in *) c->local_sockaddr;
@@ -291,12 +287,10 @@ ngx_http_init_connection(ngx_connection_t *c)
 
         switch (c->local_sockaddr->sa_family) {
 
-#if (NGX_HAVE_INET6)
         case AF_INET6:
             addr6 = port->addrs;
             hc->addr_conf = &addr6[0].conf;
             break;
-#endif
 
         default: /* AF_INET */
             addr = port->addrs;
