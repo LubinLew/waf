@@ -1,9 +1,17 @@
 # HTTP协议校验
 
 > [nsfocus(绿盟)WAF: HTTP协议校验浅析](https://www.nsfocus.com.cn/upload/contents/2015/09/2015_09181716331196.pdf)
+> 
+> 
 > [F5 WAF: Protocol Compliance](https://clouddocs.f5.com/training/community/waf/html/class3/module2/lab1/lab1.html)
+> 
+> 
 > [Overview of BIG-IP ASM HTTP protocol compliance](https://support.f5.com/csp/article/K10280)
+> 
+> 
 > [Fortinet(飞塔) WAF: Configuring an HTTP Protocol Constraint policy](https://help.fortinet.com/fadc/4-8-0/olh/Content/FortiADC/handbook/waf_protocol.htm)
+> 
+> 
 > [barracuda(梭子鱼)WAF: Configuring Request Limits](https://campus.barracuda.com/product/webapplicationfirewall/doc/4259870/configuring-request-limits/)
 
 |                     |                                                      |     |
@@ -31,6 +39,6 @@
 | 禁止重复参数              | 出现了重复的参数名称，有可能导致 WAF被绕过                              |     |
 | 禁止二次URL编码           | 在 HTTP 会话中出现了 %25 且后面不是紧跟着两个十六进制值时，可能会导致绕过 WAF       |     |
 | 是否清除异常%             | 当 URI 或参数值中包含‘%’，且后面不是紧跟着两个十六进制值时（如 %xy），可能会导致绕过 WAF |     |
-| 是否清除空字符             | 当 URI 或参数值中包含 NULL 字符时 ( 如 \0，%00 等 )，
-可能会导致绕过 WAF   |     |
+| 是否清除空字符             | 当 URI 或参数值中包含 NULL 字符时 ( 如 \0，%00 等 )，               |     |
+| 可能会导致绕过 WAF         |                                                      |     |
 |                     |                                                      |     |
