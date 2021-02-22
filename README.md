@@ -12,11 +12,11 @@ early draft
 
 # Dependency
 
-| Software | Version | Remark |
-| -------- | ------- | ------ |
-| kernel   | >= 3.9  |    SO_REUSEPORT    |
-|          |         |        |
-|          |         |        |
+| Software | Version | Remark       |
+| -------- | ------- | ------------ |
+| kernel   | >= 3.9  | SO_REUSEPORT |
+|          |         |              |
+|          |         |              |
 
 # Other WAF
 
