@@ -175,7 +175,7 @@ SOURCES += src/ngx_modules.c
 OBJS=$(SOURCES:%.c=${OUTDIR}/%.o)
 #############################################################
 .DEFAULT_GOAL := all
-.PYONY: all clean
+.PHONY: all clean
 
 all: ${OUTDIR}/${TARGET}
 
